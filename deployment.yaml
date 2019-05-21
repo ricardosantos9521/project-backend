@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backendproject-dpl	  #name pod and name replocationcontroller
+spec:
+  replicas: 2
+  revisionHistoryLimit: 3
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 50%
+      maxSurge: 2
+  selector:
+    matchLabels:
+      app: backendproject
+  template:
+    metadata:
+       labels:
+         app: backendproject
+    spec:
+      containers:
+      - name: backendproject
+        image: "registry.gitlab.com/ricardosantos9521/github/backendproject:BUILDNUMBER"
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "150m"
+        env:
+        - name: "ASPNETCORE_ENVIRONMENT"
+          value: "Kubernetes"
+        - name: "ConnectionMySql" 
+          valueFrom:
+            secretKeyRef:
+              name: backendProject
+              key: connectionpath
+        - name: "SecretKey" 
+          valueFrom:
+            secretKeyRef:
+              name: backendProject
+              key: secretkey
+        # readinessProbe:
+        #   httpGet:
+        #      path: /api/readiness/
+        #      port: 80
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 10
+        #   successThreshold: 1
+      imagePullSecrets:
+      - name: secretteamrics
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backendproject-svc	  #name service
+spec:
+  selector:
+    app: backendproject
+  ports:
+  - port: 80
+  type: NodePort
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: backendproject-ing
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/add-base-url: "true"
+    nginx.ingress.kubernetes.io/ingress.allow-http: "true"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /backendproject(.*)
+        backend:
+          serviceName: backendproject-svc
+          servicePort: 80
