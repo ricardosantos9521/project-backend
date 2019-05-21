@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backendproject-dpl	  #name pod and name replocationcontroller
 spec:
-  replicas: 2
+  replicas: 1
   revisionHistoryLimit: 3
   strategy:
     rollingUpdate:
@@ -67,12 +67,12 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/add-base-url: "true"
-    nginx.ingress.kubernetes.io/ingress.allow-http: "true"
+    nginx.ingress.kubernetes.io/ingress.allow-http: "false"
 spec:
   rules:
   - http:
       paths:
-      - path: /backendproject(.*)
+      - path: /backendproject/(.*)
         backend:
           serviceName: backendproject-svc
           servicePort: 80
