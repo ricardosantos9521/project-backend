@@ -32,12 +32,12 @@ spec:
         - name: "ConnectionMySql" 
           valueFrom:
             secretKeyRef:
-              name: backendProject
+              name: backendproject
               key: connectionpath
         - name: "SecretKey" 
           valueFrom:
             secretKeyRef:
-              name: backendProject
+              name: backendproject
               key: secretkey
         # readinessProbe:
         #   httpGet:
