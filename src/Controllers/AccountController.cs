@@ -40,6 +40,11 @@ namespace backendProject.Controllers
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
+            if (identity.Admin != null)
+            {
+                claims.Add(new Claim("admin", "true"));
+            }
+
             var date = DateTime.UtcNow;
             var date_expire = DateTime.UtcNow.AddMinutes(45);
 
@@ -103,7 +108,7 @@ namespace backendProject.Controllers
 
         private async Task<Identity> AddOrGetIdentity(string issuer, string subjectid, string firstname, string lastname, string email)
         {
-            var identity = await _dbContext.Identity.Include(x => x.Profile).FirstOrDefaultAsync(x => x.Issuer.Equals(issuer) && x.SubjectId.Equals(subjectid));
+            var identity = await _dbContext.Identity.Include(x => x.Profile).Include(x => x.Admin).FirstOrDefaultAsync(x => x.Issuer.Equals(issuer) && x.SubjectId.Equals(subjectid));
             if (identity == null)
             {
                 identity = new Identity
@@ -162,7 +167,7 @@ namespace backendProject.Controllers
 
             if (refreshToken != null && refreshToken.ExpiresUtc > DateTime.UtcNow)
             {
-                var identity = await _dbContext.Identity.Include(x => x.Profile).FirstOrDefaultAsync(x => x.UniqueId.Equals(refreshToken.UniqueId));
+                var identity = await _dbContext.Identity.Include(x => x.Profile).Include(x => x.Admin).FirstOrDefaultAsync(x => x.UniqueId.Equals(refreshToken.UniqueId));
                 if (identity != null)
                 {
                     _dbContext.Remove(refreshToken);

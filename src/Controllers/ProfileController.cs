@@ -34,7 +34,7 @@ namespace backendProject.Controllers
         {
             var uniqueid = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var profile = await _dbContext.Profile.FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueid);
+            var profile = await _dbContext.Profile.Include(x => x.Identity.Admin).FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueid);
             if (profile != null)
             {
                 return Ok(profile);
