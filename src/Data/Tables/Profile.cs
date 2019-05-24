@@ -7,7 +7,7 @@ namespace backendProject.Data.Tables
 {
     public class Profile
     {
-        [Key, JsonIgnore, ForeignKey("Identity.UniqueId")]
+        [Key, JsonIgnore]
         public Guid UniqueId { get; set; }
 
         [Required]
@@ -24,6 +24,20 @@ namespace backendProject.Data.Tables
         public Int64? BirthDate { get; set; }
 
         public String Gender { get; set; }
+
+        [NotMapped]
+        public Boolean IsAdmin
+        {
+            get
+            {
+                if (Identity != null && Identity.Admin != null)
+                {
+                    return true;
+                }
+                
+                return false;
+            }
+        }
 
         [JsonIgnore]
         public virtual Identity Identity { get; set; }
