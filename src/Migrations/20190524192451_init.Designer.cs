@@ -9,8 +9,8 @@ using backendProject.Data;
 namespace backendProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190524190327_Migrations")]
-    partial class Migrations
+    [Migration("20190524192451_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
