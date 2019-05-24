@@ -7,6 +7,7 @@ namespace backendProject.Data
     {
         public DbSet<Identity> Identity { get; set; }
         public DbSet<Profile> Profile { get; set; }
+        public DbSet<Admin> Admin { get; set; }
         public DbSet<RefreshToken> RefreshToken { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -24,6 +25,15 @@ namespace backendProject.Data
                 u.Issuer
             });
 
+            builder.Entity<Profile>()
+                .HasOne(x=>x.Identity)
+                .WithOne(x=>x.Profile)
+                .HasPrincipalKey<Identity>(x=>x.UniqueId);
+
+            builder.Entity<Admin>()
+                .HasOne(x=>x.Identity)
+                .WithOne(x=>x.Admin)
+                .HasPrincipalKey<Identity>(x=>x.UniqueId);
 
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.

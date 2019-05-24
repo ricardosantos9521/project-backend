@@ -16,6 +16,15 @@ namespace backendProject.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
+            modelBuilder.Entity("backendProject.Data.Tables.Admin", b =>
+                {
+                    b.Property<Guid>("UniqueId");
+
+                    b.HasKey("UniqueId");
+
+                    b.ToTable("Admin");
+                });
+
             modelBuilder.Entity("backendProject.Data.Tables.Identity", b =>
                 {
                     b.Property<string>("SubjectId");
@@ -27,16 +36,12 @@ namespace backendProject.Migrations
 
                     b.HasKey("SubjectId", "Issuer");
 
-                    b.HasIndex("UniqueId")
-                        .IsUnique();
-
                     b.ToTable("Identity");
                 });
 
             modelBuilder.Entity("backendProject.Data.Tables.Profile", b =>
                 {
-                    b.Property<Guid>("UniqueId")
-                        .ValueGeneratedOnAdd();
+                    b.Property<Guid>("UniqueId");
 
                     b.Property<long?>("BirthDate");
 
@@ -80,11 +85,21 @@ namespace backendProject.Migrations
                     b.ToTable("RefreshToken");
                 });
 
-            modelBuilder.Entity("backendProject.Data.Tables.Identity", b =>
+            modelBuilder.Entity("backendProject.Data.Tables.Admin", b =>
                 {
-                    b.HasOne("backendProject.Data.Tables.Profile", "Profile")
-                        .WithOne("Identity")
-                        .HasForeignKey("backendProject.Data.Tables.Identity", "UniqueId")
+                    b.HasOne("backendProject.Data.Tables.Identity", "Identity")
+                        .WithOne("Admin")
+                        .HasForeignKey("backendProject.Data.Tables.Admin", "UniqueId")
+                        .HasPrincipalKey("backendProject.Data.Tables.Identity", "UniqueId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("backendProject.Data.Tables.Profile", b =>
+                {
+                    b.HasOne("backendProject.Data.Tables.Identity", "Identity")
+                        .WithOne("Profile")
+                        .HasForeignKey("backendProject.Data.Tables.Profile", "UniqueId")
+                        .HasPrincipalKey("backendProject.Data.Tables.Identity", "UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

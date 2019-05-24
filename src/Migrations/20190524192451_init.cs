@@ -8,6 +8,37 @@ namespace backendProject.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Identity",
+                columns: table => new
+                {
+                    Issuer = table.Column<string>(nullable: false),
+                    SubjectId = table.Column<string>(nullable: false),
+                    UniqueId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Identity", x => new { x.SubjectId, x.Issuer });
+                    table.UniqueConstraint("AK_Identity_UniqueId", x => x.UniqueId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Admin",
+                columns: table => new
+                {
+                    UniqueId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Admin", x => x.UniqueId);
+                    table.ForeignKey(
+                        name: "FK_Admin_Identity_UniqueId",
+                        column: x => x.UniqueId,
+                        principalTable: "Identity",
+                        principalColumn: "UniqueId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Profile",
                 columns: table => new
                 {
@@ -22,23 +53,10 @@ namespace backendProject.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Profile", x => x.UniqueId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Identity",
-                columns: table => new
-                {
-                    Issuer = table.Column<string>(nullable: false),
-                    SubjectId = table.Column<string>(nullable: false),
-                    UniqueId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Identity", x => new { x.SubjectId, x.Issuer });
                     table.ForeignKey(
-                        name: "FK_Identity_Profile_UniqueId",
+                        name: "FK_Profile_Identity_UniqueId",
                         column: x => x.UniqueId,
-                        principalTable: "Profile",
+                        principalTable: "Identity",
                         principalColumn: "UniqueId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -66,12 +84,6 @@ namespace backendProject.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Identity_UniqueId",
-                table: "Identity",
-                column: "UniqueId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RefreshToken_IdentitySubjectId_IdentityIssuer",
                 table: "RefreshToken",
                 columns: new[] { "IdentitySubjectId", "IdentityIssuer" });
@@ -80,13 +92,16 @@ namespace backendProject.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Admin");
+
+            migrationBuilder.DropTable(
+                name: "Profile");
+
+            migrationBuilder.DropTable(
                 name: "RefreshToken");
 
             migrationBuilder.DropTable(
                 name: "Identity");
-
-            migrationBuilder.DropTable(
-                name: "Profile");
         }
     }
 }

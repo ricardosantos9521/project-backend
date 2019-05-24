@@ -17,6 +17,8 @@ namespace backendProject.Data.Tables
         public string SubjectId { get; set; }
 
         public virtual Profile Profile { get; set; }
+        
+        public virtual Admin Admin { get; set; }
 
     }
 }
