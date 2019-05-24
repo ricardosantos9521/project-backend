@@ -39,6 +39,7 @@ namespace backendProject
         {
             if (AppEnvironment.IsDevelopment())
             {
+                Console.WriteLine("Development Mode");
                 services
                     .AddDbContext<ApplicationDbContext>(options =>
                         options.UseSqlite($"Data Source=sqlite.db")
@@ -48,6 +49,7 @@ namespace backendProject
             }
             else
             {
+                Console.WriteLine("Production Mode");
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql(Environment.GetEnvironmentVariable("ConnectionMySql")));
 
