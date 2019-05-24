@@ -73,6 +73,10 @@ namespace backendProject
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                     .AddJsonOptions(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
 
+            services.AddAuthorization(options =>
+                {
+                    options.AddPolicy("IsAdmin", policy => policy.RequireClaim("admin", "true"));
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
