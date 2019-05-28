@@ -143,7 +143,7 @@ namespace backendProject.Controllers
             }
             catch (Google.Apis.Auth.InvalidJwtException ex)
             {
-                return Unauthorized(ex.Data);
+                return Unauthorized("Invalid google token!");
             }
         }
 
@@ -156,7 +156,7 @@ namespace backendProject.Controllers
                 return await UseGoogleIdToken(tokenRequest.IdToken);
             }
 
-            return Unauthorized();
+            return Unauthorized("Invalid login request!");
         }
 
         [HttpPost("token/refresh")]
@@ -177,7 +177,7 @@ namespace backendProject.Controllers
                     }
                 }
 
-                return BadRequest();
+                return Unauthorized("Unauthorized refresh token!");
             }
             else
             {
@@ -187,7 +187,7 @@ namespace backendProject.Controllers
                     await _dbContext.SaveChangesAsync();
                 }
 
-                return Unauthorized();
+                return Unauthorized("Unauthorized refresh token!");
             }
         }
     }
