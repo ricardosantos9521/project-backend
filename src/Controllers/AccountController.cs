@@ -141,7 +141,7 @@ namespace backendProject.Controllers
 
                 return Ok(tokens);
             }
-            catch (Google.Apis.Auth.InvalidJwtException ex)
+            catch (Google.Apis.Auth.InvalidJwtException)
             {
                 return Unauthorized("Invalid google token!");
             }
