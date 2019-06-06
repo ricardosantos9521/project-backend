@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using backendProject.Data;
+using backendProject.Database;
 
 namespace backendProject.Migrations
 {
@@ -18,7 +18,7 @@ namespace backendProject.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
-            modelBuilder.Entity("backendProject.Data.Tables.Admin", b =>
+            modelBuilder.Entity("backendProject.Database.Tables.Admin", b =>
                 {
                     b.Property<Guid>("UniqueId");
 
@@ -27,7 +27,7 @@ namespace backendProject.Migrations
                     b.ToTable("Admin");
                 });
 
-            modelBuilder.Entity("backendProject.Data.Tables.Identity", b =>
+            modelBuilder.Entity("backendProject.Database.Tables.Identity", b =>
                 {
                     b.Property<string>("SubjectId");
 
@@ -41,7 +41,7 @@ namespace backendProject.Migrations
                     b.ToTable("Identity");
                 });
 
-            modelBuilder.Entity("backendProject.Data.Tables.Profile", b =>
+            modelBuilder.Entity("backendProject.Database.Tables.Profile", b =>
                 {
                     b.Property<Guid>("UniqueId");
 
@@ -65,7 +65,7 @@ namespace backendProject.Migrations
                     b.ToTable("Profile");
                 });
 
-            modelBuilder.Entity("backendProject.Data.Tables.RefreshToken", b =>
+            modelBuilder.Entity("backendProject.Database.Tables.RefreshToken", b =>
                 {
                     b.Property<Guid>("Token")
                         .ValueGeneratedOnAdd();
@@ -87,27 +87,27 @@ namespace backendProject.Migrations
                     b.ToTable("RefreshToken");
                 });
 
-            modelBuilder.Entity("backendProject.Data.Tables.Admin", b =>
+            modelBuilder.Entity("backendProject.Database.Tables.Admin", b =>
                 {
-                    b.HasOne("backendProject.Data.Tables.Identity", "Identity")
+                    b.HasOne("backendProject.Database.Tables.Identity", "Identity")
                         .WithOne("Admin")
-                        .HasForeignKey("backendProject.Data.Tables.Admin", "UniqueId")
-                        .HasPrincipalKey("backendProject.Data.Tables.Identity", "UniqueId")
+                        .HasForeignKey("backendProject.Database.Tables.Admin", "UniqueId")
+                        .HasPrincipalKey("backendProject.Database.Tables.Identity", "UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Data.Tables.Profile", b =>
+            modelBuilder.Entity("backendProject.Database.Tables.Profile", b =>
                 {
-                    b.HasOne("backendProject.Data.Tables.Identity", "Identity")
+                    b.HasOne("backendProject.Database.Tables.Identity", "Identity")
                         .WithOne("Profile")
-                        .HasForeignKey("backendProject.Data.Tables.Profile", "UniqueId")
-                        .HasPrincipalKey("backendProject.Data.Tables.Identity", "UniqueId")
+                        .HasForeignKey("backendProject.Database.Tables.Profile", "UniqueId")
+                        .HasPrincipalKey("backendProject.Database.Tables.Identity", "UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Data.Tables.RefreshToken", b =>
+            modelBuilder.Entity("backendProject.Database.Tables.RefreshToken", b =>
                 {
-                    b.HasOne("backendProject.Data.Tables.Identity", "Identity")
+                    b.HasOne("backendProject.Database.Tables.Identity", "Identity")
                         .WithMany()
                         .HasForeignKey("IdentitySubjectId", "IdentityIssuer");
                 });

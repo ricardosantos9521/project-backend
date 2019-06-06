@@ -1,9 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backendProject.Database.AccountTables;
 using Newtonsoft.Json;
 
-namespace backendProject.Data.Tables
+namespace backendProject.Database.AdminTables
 {
     public class Admin
     {

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
-namespace backendProject.Data.Tables
+namespace backendProject.Database.AccountTables
 {
     public class Profile
     {

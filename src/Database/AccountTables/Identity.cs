@@ -1,8 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backendProject.Database.AdminTables;
 
-namespace backendProject.Data.Tables
+namespace backendProject.Database.AccountTables
 {
     public class Identity
     {
@@ -17,8 +18,7 @@ namespace backendProject.Data.Tables
         public string SubjectId { get; set; }
 
         public virtual Profile Profile { get; set; }
-        
-        public virtual Admin Admin { get; set; }
 
+        public virtual Admin Admin { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using backendProject.Data.Tables;
+using backendProject.Database.AccountTables;
 
 namespace backendProject.Objects.ApiRequests
 {

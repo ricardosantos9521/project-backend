@@ -1,7 +1,8 @@
-using backendProject.Data.Tables;
+using backendProject.Database.AccountTables;
+using backendProject.Database.AdminTables;
 using Microsoft.EntityFrameworkCore;
 
-namespace backendProject.Data
+namespace backendProject.Database
 {
     public class ApplicationDbContext : DbContext
     {
@@ -26,18 +27,15 @@ namespace backendProject.Data
             });
 
             builder.Entity<Profile>()
-                .HasOne(x=>x.Identity)
-                .WithOne(x=>x.Profile)
-                .HasPrincipalKey<Identity>(x=>x.UniqueId);
+                .HasOne(x => x.Identity)
+                .WithOne(x => x.Profile)
+                .HasPrincipalKey<Identity>(x => x.UniqueId);
 
             builder.Entity<Admin>()
-                .HasOne(x=>x.Identity)
-                .WithOne(x=>x.Admin)
-                .HasPrincipalKey<Identity>(x=>x.UniqueId);
+                .HasOne(x => x.Identity)
+                .WithOne(x => x.Admin)
+                .HasPrincipalKey<Identity>(x => x.UniqueId);
 
-            // Customize the ASP.NET Identity model and override the defaults if needed.
-            // For example, you can rename the ASP.NET Identity table names and more.
-            // Add your customizations after calling base.OnModelCreating(builder);
         }
     }
 }
