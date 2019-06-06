@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-namespace backendProject.Controllers
+namespace backendProject.Controllers.AccountControllers
 {
     [Route("api/[controller]")]
     [ApiController]
