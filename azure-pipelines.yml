@@ -65,4 +65,4 @@ stages:
         secretType: 'dockerRegistry'
         containerRegistryType: 'Container Registry'
         dockerRegistryEndpoint: $(dockerRegistryEndpoint)
-        secretName: 'secretteamrics'
+        secretName: 'dockerregistrysecret'
