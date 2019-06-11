@@ -11,10 +11,7 @@ namespace backendProject.Database
         public DbSet<Admin> Admin { get; set; }
         public DbSet<RefreshToken> RefreshToken { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-
-        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -26,16 +23,15 @@ namespace backendProject.Database
                 u.Issuer
             });
 
-            builder.Entity<Profile>()
-                .HasOne(x => x.Identity)
-                .WithOne(x => x.Profile)
+            builder.Entity<Identity>()
+                .HasOne(x => x.Profile)
+                .WithOne(x => x.Identity)
                 .HasPrincipalKey<Identity>(x => x.UniqueId);
 
-            builder.Entity<Admin>()
-                .HasOne(x => x.Identity)
-                .WithOne(x => x.Admin)
+            builder.Entity<Identity>()
+                .HasOne(x => x.Admin)
+                .WithOne(x => x.Identity)
                 .HasPrincipalKey<Identity>(x => x.UniqueId);
-
         }
     }
 }
