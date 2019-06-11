@@ -88,7 +88,7 @@ namespace backendProject
             {
                 var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 context.Database.EnsureCreated();
-                context.Database.Migrate();
+                if (context.Database.GetPendingMigrations().Count() > 0) context.Database.Migrate();
             }
 
             if (env.IsDevelopment())
