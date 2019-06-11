@@ -61,19 +61,30 @@ namespace backendProject.Migrations
 
                     b.Property<DateTime>("ExpiresUtc");
 
-                    b.Property<string>("IdentityIssuer");
-
-                    b.Property<string>("IdentitySubjectId");
-
                     b.Property<DateTime>("IssuedUtc");
 
-                    b.Property<Guid>("UniqueId");
+                    b.Property<Guid>("SessionId");
 
                     b.HasKey("Token");
 
-                    b.HasIndex("IdentitySubjectId", "IdentityIssuer");
+                    b.HasIndex("SessionId")
+                        .IsUnique();
 
                     b.ToTable("RefreshToken");
+                });
+
+            modelBuilder.Entity("backendProject.Database.AccountTables.Session", b =>
+                {
+                    b.Property<Guid>("SessionId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("UniqueId");
+
+                    b.HasKey("SessionId");
+
+                    b.HasIndex("UniqueId");
+
+                    b.ToTable("Session");
                 });
 
             modelBuilder.Entity("backendProject.Database.AdminTables.Admin", b =>
@@ -96,9 +107,19 @@ namespace backendProject.Migrations
 
             modelBuilder.Entity("backendProject.Database.AccountTables.RefreshToken", b =>
                 {
+                    b.HasOne("backendProject.Database.AccountTables.Session", "Session")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("backendProject.Database.AccountTables.RefreshToken", "SessionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("backendProject.Database.AccountTables.Session", b =>
+                {
                     b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
-                        .WithMany()
-                        .HasForeignKey("IdentitySubjectId", "IdentityIssuer");
+                        .WithMany("Sessions")
+                        .HasForeignKey("UniqueId")
+                        .HasPrincipalKey("UniqueId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("backendProject.Database.AdminTables.Admin", b =>

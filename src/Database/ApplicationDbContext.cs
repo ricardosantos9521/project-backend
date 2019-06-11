@@ -9,12 +9,10 @@ namespace backendProject.Database
         public DbSet<Identity> Identity { get; set; }
         public DbSet<Profile> Profile { get; set; }
         public DbSet<Admin> Admin { get; set; }
+        public DbSet<Session> Session { get; set; }
         public DbSet<RefreshToken> RefreshToken { get; set; }
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-
-        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -26,16 +24,25 @@ namespace backendProject.Database
                 u.Issuer
             });
 
-            builder.Entity<Profile>()
-                .HasOne(x => x.Identity)
-                .WithOne(x => x.Profile)
+            builder.Entity<Identity>()
+                .HasOne(x => x.Profile)
+                .WithOne(x => x.Identity)
                 .HasPrincipalKey<Identity>(x => x.UniqueId);
 
-            builder.Entity<Admin>()
-                .HasOne(x => x.Identity)
-                .WithOne(x => x.Admin)
+            builder.Entity<Identity>()
+                .HasOne(x => x.Admin)
+                .WithOne(x => x.Identity)
                 .HasPrincipalKey<Identity>(x => x.UniqueId);
 
+            builder.Entity<Identity>()
+                .HasMany(x => x.Sessions)
+                .WithOne(x => x.Identity)
+                .HasPrincipalKey(x => x.UniqueId);
+
+            builder.Entity<Session>()
+                .HasOne(x => x.RefreshToken)
+                .WithOne(x => x.Session)
+                .HasPrincipalKey<Session>(x => x.SessionId);
         }
     }
 }
