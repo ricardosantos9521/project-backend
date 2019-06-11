@@ -3,8 +3,8 @@ trigger:
 
 variables:
   poolName: HomeServers
-  imageName: 'docker.pkg.github.com/ricardosantos9521/backendproject/backendproject:$(Build.BuildNumber)'
-  dockerRegistryEndpoint: 'github registry'
+  imageName: 'registry.gitlab.com/ricardosantos9521/github/backendproject:$(Build.BuildNumber)'
+  dockerRegistryEndpoint: 'gitlab registry'
 
 stages:
 #build stage
