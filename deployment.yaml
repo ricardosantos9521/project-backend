@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: backendproject
-        image: "registry.gitlab.com/ricardosantos9521/github/backendproject:BUILDNUMBER"
+        image: "docker.pkg.github.com/ricardosantos9521/backendproject/backendproject:BUILDNUMBER"
         ports:
         - containerPort: 80
         resources:
