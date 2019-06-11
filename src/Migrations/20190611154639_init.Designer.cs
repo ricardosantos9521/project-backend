@@ -9,7 +9,7 @@ using backendProject.Database;
 namespace backendProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190524192451_init")]
+    [Migration("20190611154639_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -17,15 +17,6 @@ namespace backendProject.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
-
-            modelBuilder.Entity("backendProject.Database.AdminTables.Admin", b =>
-                {
-                    b.Property<Guid>("UniqueId");
-
-                    b.HasKey("UniqueId");
-
-                    b.ToTable("Admin");
-                });
 
             modelBuilder.Entity("backendProject.Database.AccountTables.Identity", b =>
                 {
@@ -72,28 +63,39 @@ namespace backendProject.Migrations
 
                     b.Property<DateTime>("ExpiresUtc");
 
-                    b.Property<string>("IdentityIssuer");
-
-                    b.Property<string>("IdentitySubjectId");
-
                     b.Property<DateTime>("IssuedUtc");
 
-                    b.Property<Guid>("UniqueId");
+                    b.Property<Guid>("SessionId");
 
                     b.HasKey("Token");
 
-                    b.HasIndex("IdentitySubjectId", "IdentityIssuer");
+                    b.HasIndex("SessionId")
+                        .IsUnique();
 
                     b.ToTable("RefreshToken");
                 });
 
+            modelBuilder.Entity("backendProject.Database.AccountTables.Session", b =>
+                {
+                    b.Property<Guid>("SessionId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<Guid>("UniqueId");
+
+                    b.HasKey("SessionId");
+
+                    b.HasIndex("UniqueId");
+
+                    b.ToTable("Session");
+                });
+
             modelBuilder.Entity("backendProject.Database.AdminTables.Admin", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
-                        .WithOne("Admin")
-                        .HasForeignKey("backendProject.Database.AdminTables.Admin", "UniqueId")
-                        .HasPrincipalKey("backendProject.Database.AccountTables.Identity", "UniqueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.Property<Guid>("UniqueId");
+
+                    b.HasKey("UniqueId");
+
+                    b.ToTable("Admin");
                 });
 
             modelBuilder.Entity("backendProject.Database.AccountTables.Profile", b =>
@@ -107,9 +109,28 @@ namespace backendProject.Migrations
 
             modelBuilder.Entity("backendProject.Database.AccountTables.RefreshToken", b =>
                 {
+                    b.HasOne("backendProject.Database.AccountTables.Session", "Session")
+                        .WithOne("RefreshToken")
+                        .HasForeignKey("backendProject.Database.AccountTables.RefreshToken", "SessionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("backendProject.Database.AccountTables.Session", b =>
+                {
                     b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
-                        .WithMany()
-                        .HasForeignKey("IdentitySubjectId", "IdentityIssuer");
+                        .WithMany("Sessions")
+                        .HasForeignKey("UniqueId")
+                        .HasPrincipalKey("UniqueId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("backendProject.Database.AdminTables.Admin", b =>
+                {
+                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
+                        .WithOne("Admin")
+                        .HasForeignKey("backendProject.Database.AdminTables.Admin", "UniqueId")
+                        .HasPrincipalKey("backendProject.Database.AccountTables.Identity", "UniqueId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

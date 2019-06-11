@@ -84,11 +84,10 @@ namespace backendProject
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            using (var serviceScope = app.ApplicationServices.CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                context.Database.EnsureCreated();
-                if (context.Database.GetPendingMigrations().Count() > 0) context.Database.Migrate();
+                context.Database.Migrate();
             }
 
             if (env.IsDevelopment())
