@@ -9,6 +9,7 @@ namespace backendProject.Database
         public DbSet<Identity> Identity { get; set; }
         public DbSet<Profile> Profile { get; set; }
         public DbSet<Admin> Admin { get; set; }
+        public DbSet<Session> Session { get; set; }
         public DbSet<RefreshToken> RefreshToken { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
@@ -32,6 +33,16 @@ namespace backendProject.Database
                 .HasOne(x => x.Admin)
                 .WithOne(x => x.Identity)
                 .HasPrincipalKey<Identity>(x => x.UniqueId);
+
+            builder.Entity<Identity>()
+                .HasMany(x => x.Sessions)
+                .WithOne(x => x.Identity)
+                .HasPrincipalKey(x => x.UniqueId);
+
+            builder.Entity<Session>()
+                .HasOne(x => x.RefreshToken)
+                .WithOne(x => x.Session)
+                .HasPrincipalKey<Session>(x => x.SessionId);
         }
     }
 }

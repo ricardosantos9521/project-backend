@@ -29,7 +29,7 @@ namespace backendProject.Controllers.AccountControllers
             _dbContext = dbContext;
         }
 
-        private TokenObject CreateAcessToken(Identity identity)
+        private TokenObject CreateAcessToken(Identity identity, Guid sessionId)
         {
             var claims = new List<Claim>
             {
@@ -37,7 +37,8 @@ namespace backendProject.Controllers.AccountControllers
                 new Claim(JwtRegisteredClaimNames.GivenName, identity.Profile.FirstName),
                 new Claim(JwtRegisteredClaimNames.FamilyName, identity.Profile.LastName),
                 new Claim(JwtRegisteredClaimNames.Email, identity.Profile.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Sid, sessionId.ToString())
             };
 
             if (identity.Admin != null)
@@ -68,16 +69,16 @@ namespace backendProject.Controllers.AccountControllers
             };
         }
 
-        private async Task<TokenObject> CreateRefreshToken(Identity identity)
+        private async Task<TokenObject> CreateRefreshToken(Identity identity, Guid sessionId)
         {
             var date = DateTime.UtcNow;
             var date_expire = DateTime.UtcNow.AddDays(30);
 
-            var refreshToken = new RefreshToken
+            var refreshToken = new RefreshToken()
             {
-                UniqueId = identity.UniqueId,
-                IssuedUtc = date,
-                ExpiresUtc = date_expire
+                IssuedUtc = date_expire,
+                ExpiresUtc = date_expire,
+                SessionId = sessionId
             };
 
             await _dbContext.AddAsync(refreshToken);
@@ -94,10 +95,33 @@ namespace backendProject.Controllers.AccountControllers
             return null;
         }
 
-        private async Task<TokensResponse> GenerateTokens(Identity identity)
+        private async Task<Guid> CreateSession(Identity identity)
         {
-            var accessToken = CreateAcessToken(identity);
-            var refreshToken = await CreateRefreshToken(identity);
+
+            var session = new Session()
+            {
+                UniqueId = identity.UniqueId
+            };
+
+            await _dbContext.AddAsync(session);
+
+            if (await _dbContext.SaveChangesAsync() > 0)
+            {
+                return session.SessionId;
+            }
+
+            return Guid.Empty;
+        }
+
+        private async Task<TokensResponse> GenerateTokens(Identity identity, Guid sessionId = default(Guid))
+        {
+            if (sessionId == Guid.Empty)
+            {
+                sessionId = await CreateSession(identity);
+            }
+
+            var accessToken = CreateAcessToken(identity, sessionId);
+            var refreshToken = await CreateRefreshToken(identity, sessionId);
 
             return new TokensResponse
             {
@@ -163,20 +187,19 @@ namespace backendProject.Controllers.AccountControllers
         [AllowAnonymous]
         public async Task<ActionResult> TokenRefreshRequest([FromBody]TokenRefreshRequest tokenRefreshRequest)
         {
-            var refreshToken = await _dbContext.RefreshToken.FirstOrDefaultAsync(x => x.Token.Equals(new Guid(tokenRefreshRequest.Token)));
+            var refreshToken = await _dbContext.RefreshToken.Include(x => x.Session).FirstOrDefaultAsync(x => x.Token.Equals(new Guid(tokenRefreshRequest.Token)));
 
             if (refreshToken != null && refreshToken.ExpiresUtc > DateTime.UtcNow)
             {
-                var identity = await _dbContext.Identity.Include(x => x.Profile).Include(x => x.Admin).FirstOrDefaultAsync(x => x.UniqueId.Equals(refreshToken.UniqueId));
+                var identity = await _dbContext.Identity.Include(x => x.Profile).Include(x => x.Admin).FirstOrDefaultAsync(x => x.UniqueId.Equals(refreshToken.Session.UniqueId));
                 if (identity != null)
                 {
                     _dbContext.Remove(refreshToken);
                     if (await _dbContext.SaveChangesAsync() > 0)
                     {
-                        return Ok(await GenerateTokens(identity));
+                        return Ok(await GenerateTokens(identity, refreshToken.SessionId));
                     }
                 }
-
                 return Unauthorized("Unauthorized refresh token!");
             }
             else
@@ -186,9 +209,9 @@ namespace backendProject.Controllers.AccountControllers
                     _dbContext.Remove(refreshToken);
                     await _dbContext.SaveChangesAsync();
                 }
-
                 return Unauthorized("Unauthorized refresh token!");
             }
+
         }
     }
 }

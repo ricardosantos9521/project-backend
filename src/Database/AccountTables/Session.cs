@@ -1,22 +1,24 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 
 namespace backendProject.Database.AccountTables
 {
-    public class RefreshToken
+    public class Session
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Token { get; set; }
-        public DateTime IssuedUtc { get; set; }
-        public DateTime ExpiresUtc { get; set; }
+        public Guid SessionId { get; set; }
 
         [Required]
-        public Guid SessionId { get; set; }
-        
+        public Guid UniqueId { get; set; }
+
         [JsonIgnore]
-        public virtual Session Session { get; set; }
+        public virtual Identity Identity { get; set; }
+
+        [JsonIgnore]
+        public virtual RefreshToken RefreshToken { get; set; }
     }
 }
