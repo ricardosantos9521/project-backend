@@ -21,10 +21,10 @@ namespace backendProject.Controllers.AccountControllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class LoginController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private ApplicationDbContext _dbContext;
-        public LoginController(ApplicationDbContext dbContext)
+        public AuthController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
