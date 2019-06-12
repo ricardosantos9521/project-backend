@@ -28,7 +28,7 @@ spec:
             cpu: "150m"
         env:
         - name: "ASPNETCORE_ENVIRONMENT"
-          value: "Kubernetes"
+          value: "Production"
         - name: "ConnectionMySql" 
           valueFrom:
             secretKeyRef:
