@@ -21,10 +21,10 @@ namespace backendProject.Controllers.AccountControllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class AccountController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private ApplicationDbContext _dbContext;
-        public AccountController(ApplicationDbContext dbContext)
+        public AuthController(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -113,24 +113,25 @@ namespace backendProject.Controllers.AccountControllers
             return Guid.Empty;
         }
 
-        private async Task<TokensResponse> GenerateTokens(Identity identity, Guid sessionId = default(Guid))
+        private async Task<TokensResponse> GenerateTokens((Identity, Boolean) identity, Guid sessionId = default(Guid))
         {
             if (sessionId == Guid.Empty)
             {
-                sessionId = await CreateSession(identity);
+                sessionId = await CreateSession(identity.Item1);
             }
 
-            var accessToken = CreateAcessToken(identity, sessionId);
-            var refreshToken = await CreateRefreshToken(identity, sessionId);
+            var accessToken = CreateAcessToken(identity.Item1, sessionId);
+            var refreshToken = await CreateRefreshToken(identity.Item1, sessionId);
 
             return new TokensResponse
             {
                 AccessToken = accessToken,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                isAccountNew = identity.Item2
             };
         }
 
-        private async Task<Identity> AddOrGetIdentity(string issuer, string subjectid, string firstname, string lastname, string email)
+        private async Task<(Identity, Boolean)> AddOrGetIdentity(string issuer, string subjectid, string firstname, string lastname, string email)
         {
             var identity = await _dbContext.Identity.Include(x => x.Profile).Include(x => x.Admin).FirstOrDefaultAsync(x => x.Issuer.Equals(issuer) && x.SubjectId.Equals(subjectid));
             if (identity == null)
@@ -147,10 +148,13 @@ namespace backendProject.Controllers.AccountControllers
                     }
                 };
                 await _dbContext.AddAsync(identity);
-                await _dbContext.SaveChangesAsync();
+                if (await _dbContext.SaveChangesAsync() > 0)
+                {
+                    return (identity, true);
+                }
             }
 
-            return identity;
+            return (identity, false);
         }
 
         private async Task<ActionResult> UseGoogleIdToken(string idToken)
@@ -197,7 +201,7 @@ namespace backendProject.Controllers.AccountControllers
                     _dbContext.Remove(refreshToken);
                     if (await _dbContext.SaveChangesAsync() > 0)
                     {
-                        return Ok(await GenerateTokens(identity, refreshToken.SessionId));
+                        return Ok(await GenerateTokens((identity, false), refreshToken.SessionId));
                     }
                 }
                 return Unauthorized("Unauthorized refresh token!");
