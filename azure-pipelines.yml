@@ -41,6 +41,7 @@ stages:
 #deploy stage
 - stage: Deploy
   dependsOn: Build
+  condition: ne(variables['Build.Reason'], 'PullRequest')
   jobs:
   - job: DeployJob
     pool: $(poolName)
