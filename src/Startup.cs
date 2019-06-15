@@ -1,22 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using backendProject.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 
 namespace backendProject
 {
@@ -25,19 +18,19 @@ namespace backendProject
         public static string Issuer = "rics";
         public static string Audience = "backendProject";
         public static SecurityKey SecurityKey { get; set; }
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
             AppEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
-        private IHostingEnvironment AppEnvironment { get; }
+        private IWebHostEnvironment AppEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (AppEnvironment.IsDevelopment())
+            if (AppEnvironment.EnvironmentName.Equals("Development"))
             {
                 Console.WriteLine("Development Mode");
                 services
@@ -72,25 +65,31 @@ namespace backendProject
                     };
                 });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                    .AddJsonOptions(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
 
             services.AddAuthorization(options =>
                 {
                     options.AddPolicy("IsAdmin", policy => policy.RequireClaim("admin", "true"));
                 });
+
+            services.AddControllers();
+            services.AddMvc()
+                .AddNewtonsoftJson(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            using (var serviceScope = app.ApplicationServices.CreateScope())
+            Task.Factory.StartNew(async () =>
             {
-                var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                context.Database.Migrate();
-            }
+                using (var serviceScope = app.ApplicationServices.CreateScope())
+                {
+                    var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+                    await context.Database.MigrateAsync();
+                    await context.Database.OpenConnectionAsync();
+                }
+            });
 
-            if (env.IsDevelopment())
+            if (env.EnvironmentName.Equals("Development"))
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -108,9 +107,15 @@ namespace backendProject
                         .AllowCredentials();
             });
 
+            app.UseRouting();
+
             app.UseAuthentication();
-            // app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

@@ -24,11 +24,11 @@ spec:
         - containerPort: 80
         resources:
           limits:
-            memory: "500Mi"
-            cpu: "150m"
+            memory: "400Mi"
+            cpu: "400m"
         env:
         - name: "ASPNETCORE_ENVIRONMENT"
-          value: "Kubernetes"
+          value: "Production"
         - name: "ConnectionMySql" 
           valueFrom:
             secretKeyRef:
