@@ -65,12 +65,15 @@ namespace backendProject
                     };
                 });
 
-            services.AddControllers();
 
             services.AddAuthorization(options =>
                 {
                     options.AddPolicy("IsAdmin", policy => policy.RequireClaim("admin", "true"));
                 });
+
+            services.AddControllers();
+            services.AddMvc()
+                .AddNewtonsoftJson(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,7 +108,7 @@ namespace backendProject
             });
 
             app.UseRouting();
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
 
