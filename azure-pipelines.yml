@@ -63,7 +63,7 @@ stages:
         command: 'apply'
         useConfigurationFile: true
         configuration: '$(System.DefaultWorkingDirectory)/drop/deployment.yaml'
-        # containerRegistryType: 'Container Registry'
-        # secretType: 'dockerRegistry'
-        # dockerRegistryEndpoint: $(dockerRegistryEndpoint)
-        # secretName: 'dockerregistrysecret-github'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Container Registry'
+        dockerRegistryEndpoint: $(dockerRegistryEndpoint)
+        secretName: 'dockerregistrysecret-github'
