@@ -18,19 +18,19 @@ namespace backendProject
         public static string Issuer = "rics";
         public static string Audience = "backendProject";
         public static SecurityKey SecurityKey { get; set; }
-        public Startup(IConfiguration configuration, IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
             AppEnvironment = env;
         }
 
         public IConfiguration Configuration { get; }
-        private IHostingEnvironment AppEnvironment { get; }
+        private IWebHostEnvironment AppEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            if (AppEnvironment.IsDevelopment())
+            if (AppEnvironment.EnvironmentName.Equals("Development"))
             {
                 Console.WriteLine("Development Mode");
                 services
@@ -65,8 +65,7 @@ namespace backendProject
                     };
                 });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                    .AddJsonOptions(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
+            services.AddControllers();
 
             services.AddAuthorization(options =>
                 {
@@ -75,7 +74,7 @@ namespace backendProject
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             Task.Factory.StartNew(async () =>
             {
@@ -87,7 +86,7 @@ namespace backendProject
                 }
             });
 
-            if (env.IsDevelopment())
+            if (env.EnvironmentName.Equals("Development"))
             {
                 app.UseDeveloperExceptionPage();
             }
@@ -105,9 +104,14 @@ namespace backendProject
                         .AllowCredentials();
             });
 
-            app.UseAuthentication();
-            // app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
