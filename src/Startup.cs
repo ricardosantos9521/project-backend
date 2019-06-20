@@ -5,7 +5,6 @@ using backendProject.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,8 +48,7 @@ namespace backendProject
                 SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("SecretKey")));
             }
 
-            services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(jwtBearerOptions =>
                 {
                     jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
@@ -65,13 +63,13 @@ namespace backendProject
                     };
                 });
 
-
             services.AddAuthorization(options =>
                 {
                     options.AddPolicy("IsAdmin", policy => policy.RequireClaim("admin", "true"));
                 });
 
             services.AddControllers();
+
             services.AddMvc()
                 .AddNewtonsoftJson(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
         }
