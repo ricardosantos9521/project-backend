@@ -29,24 +29,24 @@ namespace backendProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // if (AppEnvironment.EnvironmentName.Equals("Development"))
-            // {
+            if (AppEnvironment.EnvironmentName.Equals("Development"))
+            {
                 Console.WriteLine("Development Mode");
                 services
                     .AddDbContext<ApplicationDbContext>(options =>
                         options.UseSqlite($"Data Source=sqlite.db")
                     );
 
-                //     SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("BllqVlGsFgKUchzUo5n7cQ=="));
-                // }
-                // else
-                // {
-                //     Console.WriteLine("Production Mode");
-                //     services.AddDbContext<ApplicationDbContext>(options =>
-                //         options.UseMySql(Environment.GetEnvironmentVariable("ConnectionMySql")));
+                SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("BllqVlGsFgKUchzUo5n7cQ=="));
+            }
+            else
+            {
+                Console.WriteLine("Production Mode");
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseMySql(Environment.GetEnvironmentVariable("ConnectionMySql")));
 
                 SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("SecretKey")));
-            // }
+            }
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(jwtBearerOptions =>
