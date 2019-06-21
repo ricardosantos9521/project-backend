@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using backendProject.Database;
@@ -14,6 +15,7 @@ namespace backendProject
 {
     public class Startup
     {
+        public static List<string> Readiness = new List<string>();
         public static string Issuer = "rics";
         public static string Audience = "backendProject";
         public static SecurityKey SecurityKey { get; set; }
@@ -72,6 +74,8 @@ namespace backendProject
 
             services.AddMvc()
                 .AddNewtonsoftJson(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
+
+            Readiness.Add("Services Configure");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,6 +89,8 @@ namespace backendProject
                     await context.Database.MigrateAsync();
                     await context.Database.OpenConnectionAsync();
                 }
+
+                Readiness.Add("Database Migration");
             });
 
             if (env.EnvironmentName.Equals("Development"))
@@ -114,6 +120,8 @@ namespace backendProject
             {
                 endpoints.MapControllers();
             });
+
+            Readiness.Add("Configure the HTTP request pipeline");
         }
     }
 }
