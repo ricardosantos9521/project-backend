@@ -24,8 +24,11 @@ spec:
         - containerPort: 80
         resources:
           limits:
-            memory: "400Mi"
-            cpu: "400m"
+            cpu: 500m
+            memory: 250Mi
+          requests:
+            cpu: 250m
+            memory: 125Mi
         env:
         - name: "ASPNETCORE_ENVIRONMENT"
           value: "Production"
