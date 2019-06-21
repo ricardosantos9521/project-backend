@@ -1,11 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using backendProject.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +15,7 @@ namespace backendProject
 {
     public class Startup
     {
+        public static List<string> Readiness = new List<string>();
         public static string Issuer = "rics";
         public static string Audience = "backendProject";
         public static SecurityKey SecurityKey { get; set; }
@@ -49,8 +50,7 @@ namespace backendProject
                 SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("SecretKey")));
             }
 
-            services
-                .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(jwtBearerOptions =>
                 {
                     jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters()
@@ -65,15 +65,17 @@ namespace backendProject
                     };
                 });
 
-
             services.AddAuthorization(options =>
                 {
                     options.AddPolicy("IsAdmin", policy => policy.RequireClaim("admin", "true"));
                 });
 
             services.AddControllers();
+
             services.AddMvc()
                 .AddNewtonsoftJson(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
+
+            Readiness.Add("Services Configure");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,6 +89,8 @@ namespace backendProject
                     await context.Database.MigrateAsync();
                     await context.Database.OpenConnectionAsync();
                 }
+
+                Readiness.Add("Database Migration");
             });
 
             if (env.EnvironmentName.Equals("Development"))
@@ -97,6 +101,7 @@ namespace backendProject
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                app.UseHttpsRedirection();
             }
 
             app.UseCors(builder =>
@@ -116,6 +121,8 @@ namespace backendProject
             {
                 endpoints.MapControllers();
             });
+
+            Readiness.Add("Configure the HTTP request pipeline");
         }
     }
 }

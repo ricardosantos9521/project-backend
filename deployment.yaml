@@ -24,8 +24,11 @@ spec:
         - containerPort: 80
         resources:
           limits:
-            memory: "400Mi"
-            cpu: "400m"
+            cpu: 500m
+            memory: 250Mi
+          requests:
+            cpu: 250m
+            memory: 125Mi
         env:
         - name: "ASPNETCORE_ENVIRONMENT"
           value: "Production"
@@ -39,13 +42,13 @@ spec:
             secretKeyRef:
               name: backendproject
               key: secretkey
-        # readinessProbe:
-        #   httpGet:
-        #      path: /api/readiness/
-        #      port: 80
-        #   initialDelaySeconds: 60
-        #   periodSeconds: 10
-        #   successThreshold: 1
+        readinessProbe:
+          httpGet:
+             path: /api/readiness/
+             port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
       imagePullSecrets:
       - name: dockerregistrysecret-github
 ---
