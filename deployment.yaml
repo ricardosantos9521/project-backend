@@ -21,7 +21,7 @@ spec:
       - name: backendproject
         image: "registry.gitlab.com/ricardosantos9521/github/backendproject:BUILDNUMBER"
         ports:
-        - containerPort: 443
+        - containerPort: 80
         resources:
           limits:
             memory: "400Mi"
@@ -42,7 +42,7 @@ spec:
         readinessProbe:
           httpGet:
              path: /api/readiness/
-             port: 443
+             port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
           successThreshold: 1
@@ -57,7 +57,7 @@ spec:
   selector:
     app: backendproject
   ports:
-  - port: 443
+  - port: 80
   type: NodePort
 ---
 apiVersion: extensions/v1beta1
@@ -75,4 +75,4 @@ spec:
       - path: /backendproject/(.*)
         backend:
           serviceName: backendproject-svc
-          servicePort: 443
+          servicePort: 80
