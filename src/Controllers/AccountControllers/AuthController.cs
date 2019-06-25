@@ -83,6 +83,14 @@ namespace backendProject.Controllers.AccountControllers
 
             if (await _dbContext.SaveChangesAsync() > 0)
             {
+                var sesion = await _dbContext.Session.FirstOrDefaultAsync(x => x.SessionId.Equals(sessionId));
+
+                sesion.LastLogin = refreshToken.IssuedUtc;
+
+                _dbContext.Session.Attach(sesion);
+
+                await _dbContext.SaveChangesAsync();
+
                 return new TokenObject
                 {
                     Token = refreshToken.Token.ToString(),
@@ -98,7 +106,8 @@ namespace backendProject.Controllers.AccountControllers
 
             var session = new Session()
             {
-                UniqueId = identity.UniqueId
+                UniqueId = identity.UniqueId,
+                FirstLogin = DateTime.UtcNow
             };
 
             await _dbContext.AddAsync(session);
