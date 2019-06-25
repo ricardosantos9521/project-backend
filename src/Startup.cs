@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace backendProject
 {
@@ -73,7 +74,11 @@ namespace backendProject
             services.AddControllers();
 
             services.AddMvc()
-                .AddNewtonsoftJson(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
+                .AddNewtonsoftJson(x =>
+                    {
+                        x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat;
+                    }
+                );
 
             Readiness.Add("Services Configure");
         }
