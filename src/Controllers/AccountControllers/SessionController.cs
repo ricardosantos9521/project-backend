@@ -36,8 +36,8 @@ namespace backendProject.Controllers.AccountControllers
             return BadRequest();
         }
 
-        [HttpPost("logout")]
-        public async Task<ActionResult> LogoutSession([FromBody] string sessionIdToDelete)
+        [HttpPost("delete")]
+        public async Task<ActionResult> DeleteSession([FromBody] string sessionIdToDelete)
         {
             var uniqueid = User.GetUniqueId();
 
@@ -62,6 +62,28 @@ namespace backendProject.Controllers.AccountControllers
             else
             {
                 return BadRequest("You don't own the sessionId or the session don't exist already!");
+            }
+
+            return BadRequest("Something happen");
+        }
+
+        [HttpPost("logout")]
+        public async Task<ActionResult> LogoutSession()
+        {
+            var uniqueid = User.GetUniqueId();
+
+            var sessionId = User.GetSessionId();
+
+            var sessionIdToDeleteGuid = new Guid(sessionId);
+
+            var session = await _dbContext.Session.FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueid && x.SessionId == sessionIdToDeleteGuid);
+            if (session != null)
+            {
+                _dbContext.Session.Remove(session);
+                if (await _dbContext.SaveChangesAsync() > 0)
+                {
+                    return Ok();
+                }
             }
 
             return BadRequest("Something happen");
