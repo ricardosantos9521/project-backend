@@ -9,8 +9,8 @@ using backendProject.Database;
 namespace backendProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190622190348_update_session")]
-    partial class update_session
+    [Migration("20190625172103_update_session_table")]
+    partial class update_session_table
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace backendProject.Migrations
                 {
                     b.Property<Guid>("UniqueId");
 
-                    b.Property<long?>("BirthDate");
+                    b.Property<DateTime?>("BirthDate");
 
                     b.Property<string>("Email")
                         .IsRequired();
