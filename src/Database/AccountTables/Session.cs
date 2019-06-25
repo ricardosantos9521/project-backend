@@ -13,6 +13,8 @@ namespace backendProject.Database.AccountTables
 
         [Required]
         public Guid UniqueId { get; set; }
+        public DateTime FirstLogin { get; set; }
+        public DateTime LastLogin { get; set; }
 
         [JsonIgnore]
         public virtual Identity Identity { get; set; }
