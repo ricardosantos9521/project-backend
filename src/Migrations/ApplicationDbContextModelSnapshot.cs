@@ -34,7 +34,7 @@ namespace backendProject.Migrations
                 {
                     b.Property<Guid>("UniqueId");
 
-                    b.Property<long?>("BirthDate");
+                    b.Property<DateTime?>("BirthDate");
 
                     b.Property<string>("Email")
                         .IsRequired();

@@ -77,6 +77,7 @@ namespace backendProject
                 .AddNewtonsoftJson(x =>
                     {
                         x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat;
+                        x.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
                     }
                 );
 
