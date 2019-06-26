@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using backendProject.Database.AdminTables;
+using backendProject.Database.FilesTables;
 
 namespace backendProject.Database.AccountTables
 {
@@ -23,5 +24,9 @@ namespace backendProject.Database.AccountTables
         public virtual Admin Admin { get; set; }
 
         public virtual ICollection<Session> Sessions { get; set; }
+        
+        public virtual ICollection<Read> ReadPermissions { get; set; }
+        
+        public virtual ICollection<Write> WritePermissions { get; set; }
     }
 }
