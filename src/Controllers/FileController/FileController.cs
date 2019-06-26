@@ -69,7 +69,7 @@ namespace backendProject.Controllers.FileController
             return Ok(fileTable.FileId);
         }
 
-        [HttpGet("download/{fileId}")]
+        [HttpGet("get/{fileId}")]
         public async Task<IActionResult> GetFile(string fileId)
         {
             var uniqueId = User.GetUniqueId();
