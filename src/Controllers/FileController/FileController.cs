@@ -64,9 +64,13 @@ namespace backendProject.Controllers.FileController
 
             await _dbContext.File.AddAsync(fileTable);
 
-            await _dbContext.SaveChangesAsync();
+            if (await _dbContext.SaveChangesAsync() > 0)
+            {
+                return Ok(fileTable.FileId);
+            };
 
-            return Ok(fileTable.FileId);
+            return BadRequest();
+
         }
 
         [HttpGet("get/{fileId}")]
