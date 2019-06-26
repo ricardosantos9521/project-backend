@@ -68,5 +68,20 @@ namespace backendProject.Controllers.FileController
 
             return Ok(fileTable.FileId);
         }
+
+        [HttpGet("download/{fileId}")]
+        public async Task<IActionResult> GetFile(string fileId)
+        {
+            var uniqueId = User.GetUniqueId();
+
+            var file = await _dbContext.ReadPermissions.Include(x => x.File).FirstOrDefaultAsync(x => x.FileId == new Guid(fileId) && x.UniqueId == new Guid(uniqueId));
+
+            if (file != null)
+            {
+                return File(file.File.Bytes, file.File.ContentType, file.File.FileName);
+            }
+
+            return BadRequest("File doesn't exist or you don't have permissions to it!");
+        }
     }
 }
