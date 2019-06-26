@@ -7,7 +7,7 @@ namespace backendProject.Database.FilesTables
     {
         public Guid FileId { get; set; }
 
-        public virtual File File { get; set; }
+        public virtual FileBytes File { get; set; }
 
         public Guid UniqueId { get; set; }
 
