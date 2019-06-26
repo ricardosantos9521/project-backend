@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace backendProject.Controllers.FileController
 {
@@ -65,7 +66,7 @@ namespace backendProject.Controllers.FileController
 
             await _dbContext.SaveChangesAsync();
 
-            return Ok();
+            return Ok(fileTable.FileId);
         }
     }
 }
