@@ -23,10 +23,23 @@ namespace backendProject.Controllers.FileController
             _dbContext = dbContext;
         }
 
-        public async Task<byte[]> UploadFileAsBlob(Stream stream, string filename, long length)
+        public async Task<byte[]> UploadFileAsBlob(Stream stream, long totalLength)
         {
-            var bytes = new byte[length];
-            await stream.ReadAsync(bytes, 0, 1000000);
+            var bytes = new byte[totalLength];
+            long position = 0;
+            int bytesToRead = (totalLength <= 1000000) ? Convert.ToInt32(totalLength) : 1000000;
+
+            while (bytesToRead != 0)
+            {
+                var bytesAux = new byte[bytesToRead];
+                await stream.ReadAsync(bytesAux, 0, bytesToRead);
+                bytesAux.CopyTo(bytes, position);
+
+                totalLength -= bytesToRead;
+                position += bytesToRead;
+                bytesToRead = (totalLength <= 1000000) ? Convert.ToInt32(totalLength) : 1000000;
+            }
+
             return bytes;
         }
 
@@ -37,7 +50,7 @@ namespace backendProject.Controllers.FileController
 
             var stream = file.OpenReadStream();
 
-            var bytes = await UploadFileAsBlob(stream, file.FileName, file.Length);
+            var bytes = await UploadFileAsBlob(stream, file.Length);
 
             var fileTable = new FileBytes
             {
