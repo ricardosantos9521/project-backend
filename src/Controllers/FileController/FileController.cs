@@ -73,7 +73,8 @@ namespace backendProject.Controllers.FileController
                     {
                         UniqueId = new Guid(uniqueId)
                     }
-                }
+                },
+                CreationDate = DateTime.UtcNow
             };
 
             await _dbContext.File.AddAsync(fileTable);
@@ -100,6 +101,7 @@ namespace backendProject.Controllers.FileController
                                         x.IsPublic
                                     )
                                 )
+                                .OrderByDescending(x => x.CreationDate)
                                 .Select(x =>
                                     new FileInfo
                                     {
@@ -109,7 +111,8 @@ namespace backendProject.Controllers.FileController
                                         FileName = x.FileName,
                                         IsPublic = x.IsPublic,
                                         ReadPermission = x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)),
-                                        WritePermission = x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))
+                                        WritePermission = x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId)),
+                                        CreationDate = x.CreationDate
                                     }
                                 )
                                 .FirstOrDefaultAsync();
@@ -147,5 +150,6 @@ namespace backendProject.Controllers.FileController
         public Boolean IsPublic { get; set; }
         public Boolean WritePermission { get; set; }
         public Boolean ReadPermission { get; set; }
+        public DateTime CreationDate { get; set; }
     }
 }

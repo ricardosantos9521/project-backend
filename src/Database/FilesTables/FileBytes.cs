@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace backendProject.Database.FilesTables
 {
@@ -26,6 +27,10 @@ namespace backendProject.Database.FilesTables
 
         [Required]
         public Boolean IsPublic { get; set; } = false;
+
+        [Required]
+        [JsonConverter(typeof(IsoDateTimeConverter))]
+        public DateTime CreationDate { get; set; }
 
         public virtual ICollection<Read> ReadPermissions { get; set; }
         public virtual ICollection<Write> WritePermissions { get; set; }
