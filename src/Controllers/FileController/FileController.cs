@@ -130,5 +130,29 @@ namespace backendProject.Controllers.FileController
 
             return BadRequest("File doesn't exist or you don't have permissions to it!");
         }
+
+        [HttpGet("files")]
+        public async Task<IActionResult> GetFilesInfo()
+        {
+            var uniqueId = User.GetUniqueId();
+
+            var list = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions)
+                                .Where(x =>
+                                   x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
+                                   x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))
+                                )
+                                .OrderByDescending(x => x.CreationDate)
+                                .Select(x =>
+                                    new FileDescription(x, new Guid(uniqueId))
+                                )
+                                .ToListAsync();
+
+            if (list != null)
+            {
+                return Ok(list);
+            }
+
+            return BadRequest("Something happen try again later!");
+        }
     }
 }
