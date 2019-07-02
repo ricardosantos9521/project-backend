@@ -92,11 +92,30 @@ namespace backendProject.Controllers.FileController
         {
             var uniqueId = User.GetUniqueId();
 
-            var file = _dbContext.ReadPermissions.Include(x => x.File).Where(x => x.FileId == new Guid(fileId) && x.UniqueId == new Guid(uniqueId)).Select(x => new { x.File.ContentType, x.File.FileLength, x.File.FileName });
+            var file = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions)
+                                .Where(x =>
+                                    x.FileId == new Guid(fileId) && (
+                                        x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
+                                        x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
+                                        x.IsPublic
+                                    )
+                                )
+                                .Select(x =>
+                                    new FileInfo
+                                    {
+                                        ContentType = x.ContentType,
+                                        FileLength = x.FileLength,
+                                        FileName = x.FileName,
+                                        IsPublic = x.IsPublic,
+                                        ReadPermissions = x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)),
+                                        WritePermissions = x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))
+                                    }
+                                )
+                                .FirstOrDefaultAsync();
 
             if (file != null)
             {
-                return Ok(await file.FirstOrDefaultAsync());
+                return Ok(file);
             }
 
             return BadRequest("File doesn't exist or you don't have permissions to it!");
@@ -116,5 +135,15 @@ namespace backendProject.Controllers.FileController
 
             return BadRequest("File doesn't exist or you don't have permissions to it!");
         }
+    }
+
+    public class FileInfo
+    {
+        public string ContentType { get; set; }
+        public string FileName { get; set; }
+        public long FileLength { get; set; }
+        public Boolean IsPublic { get; set; }
+        public Boolean WritePermissions { get; set; }
+        public Boolean ReadPermissions { get; set; }
     }
 }
