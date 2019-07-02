@@ -7,7 +7,7 @@ using Newtonsoft.Json.Converters;
 
 namespace backendProject.Database.FilesTables
 {
-    public class FileBytes
+    public class File
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -7,7 +7,7 @@ namespace backendProject.Objects.ApiResponses
     public class FileDescription
     {
         public FileDescription() { }
-        public FileDescription(FileBytes file, Guid uniqueId)
+        public FileDescription(File file, Guid uniqueId)
         {
             FileId = file.FileId;
             ContentType = file.ContentType;

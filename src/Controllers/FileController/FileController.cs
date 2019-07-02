@@ -54,7 +54,7 @@ namespace backendProject.Controllers.FileController
 
             var bytes = await UploadFileAsBlob(stream, file.Length);
 
-            var fileTable = new FileBytes
+            var fileTable = new Database.FilesTables.File
             {
                 Bytes = bytes,
                 ContentType = file.ContentType,

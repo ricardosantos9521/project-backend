@@ -12,7 +12,7 @@ namespace backendProject.Database
         public DbSet<Admin> Admin { get; set; }
         public DbSet<Session> Session { get; set; }
         public DbSet<RefreshToken> RefreshToken { get; set; }
-        public DbSet<FileBytes> File { get; set; }
+        public DbSet<File> File { get; set; }
         public DbSet<Read> ReadPermissions { get; set; }
         public DbSet<Write> WritePermissions { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
