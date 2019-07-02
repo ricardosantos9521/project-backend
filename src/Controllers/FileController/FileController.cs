@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using backendProject.Objects.ApiResponses;
 
 namespace backendProject.Controllers.FileController
 {
@@ -81,7 +82,7 @@ namespace backendProject.Controllers.FileController
 
             if (await _dbContext.SaveChangesAsync() > 0)
             {
-                return Ok(fileTable.FileId);
+                return Ok(new FileDescription(fileTable, new Guid(uniqueId)));
             };
 
             return BadRequest();
@@ -103,17 +104,7 @@ namespace backendProject.Controllers.FileController
                                 )
                                 .OrderByDescending(x => x.CreationDate)
                                 .Select(x =>
-                                    new FileInfo
-                                    {
-                                        FileId = x.FileId,
-                                        ContentType = x.ContentType,
-                                        FileLength = x.FileLength,
-                                        FileName = x.FileName,
-                                        IsPublic = x.IsPublic,
-                                        ReadPermission = x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)),
-                                        WritePermission = x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId)),
-                                        CreationDate = x.CreationDate
-                                    }
+                                    new FileDescription(x, new Guid(uniqueId))
                                 )
                                 .FirstOrDefaultAsync();
 
@@ -139,17 +130,5 @@ namespace backendProject.Controllers.FileController
 
             return BadRequest("File doesn't exist or you don't have permissions to it!");
         }
-    }
-
-    public class FileInfo
-    {
-        public Guid FileId { get; set; }
-        public string ContentType { get; set; }
-        public string FileName { get; set; }
-        public long FileLength { get; set; }
-        public Boolean IsPublic { get; set; }
-        public Boolean WritePermission { get; set; }
-        public Boolean ReadPermission { get; set; }
-        public DateTime CreationDate { get; set; }
     }
 }
