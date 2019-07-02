@@ -12,10 +12,10 @@ namespace backendProject.Database.AccountTables
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid UniqueId { get; set; }
 
-        [Required]
+        [Required, MaxLength(50)]
         public string Issuer { get; set; }
 
-        [Required]
+        [Required, MaxLength(100)]
         public string SubjectId { get; set; }
 
         public virtual Profile Profile { get; set; }

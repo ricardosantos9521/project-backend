@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 
 namespace backendProject
 {
@@ -35,10 +34,8 @@ namespace backendProject
             if (AppEnvironment.EnvironmentName.Equals("Development"))
             {
                 Console.WriteLine("Development Mode");
-                services
-                    .AddDbContext<ApplicationDbContext>(options =>
-                        options.UseSqlite($"Data Source=sqlite.db")
-                    );
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseMySql("Server=localhost;Database=backendProject;User=root;Password=root"));
 
                 SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("BllqVlGsFgKUchzUo5n7cQ=="));
             }
