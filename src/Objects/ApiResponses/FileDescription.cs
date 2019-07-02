@@ -17,6 +17,12 @@ namespace backendProject.Objects.ApiResponses
             ReadPermission = file.ReadPermissions.Any(y => y.UniqueId == uniqueId);
             WritePermission = file.WritePermissions.Any(y => y.UniqueId == uniqueId);
             CreationDate = file.CreationDate;
+            CreatedBy = new CreatedByProfile
+            {
+                FirstName = file.CreatedBy.FirstName,
+                LastName = file.CreatedBy.LastName,
+                UniqueId = file.CreatedBy.UniqueId
+            };
         }
 
         public Guid FileId { get; set; }
@@ -27,5 +33,13 @@ namespace backendProject.Objects.ApiResponses
         public Boolean WritePermission { get; set; }
         public Boolean ReadPermission { get; set; }
         public DateTime CreationDate { get; set; }
+        public CreatedByProfile CreatedBy { get; set; }
+    }
+
+    public class CreatedByProfile
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public Guid UniqueId { get; set; }
     }
 }

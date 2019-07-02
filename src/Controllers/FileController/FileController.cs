@@ -75,14 +75,19 @@ namespace backendProject.Controllers.FileController
                         UniqueId = new Guid(uniqueId)
                     }
                 },
-                CreationDate = DateTime.UtcNow
+                CreationDate = DateTime.UtcNow,
+                UniqueId = new Guid(uniqueId)
             };
 
             await _dbContext.File.AddAsync(fileTable);
 
             if (await _dbContext.SaveChangesAsync() > 0)
             {
-                return Ok(new FileDescription(fileTable, new Guid(uniqueId)));
+                var fileAux = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.CreatedBy).FirstOrDefaultAsync(x => x.UniqueId == fileTable.UniqueId);
+                if (fileAux != null)
+                {
+                    return Ok(new FileDescription(fileAux, new Guid(uniqueId)));
+                }
             };
 
             return BadRequest();
@@ -94,7 +99,7 @@ namespace backendProject.Controllers.FileController
         {
             var uniqueId = User.GetUniqueId();
 
-            var file = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions)
+            var file = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.CreatedBy)
                                 .Where(x =>
                                     x.FileId == new Guid(fileId) && (
                                         x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
@@ -136,7 +141,7 @@ namespace backendProject.Controllers.FileController
         {
             var uniqueId = User.GetUniqueId();
 
-            var list = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions)
+            var list = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.CreatedBy)
                                 .Where(x =>
                                    x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
                                    x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))

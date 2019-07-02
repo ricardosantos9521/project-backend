@@ -47,6 +47,13 @@ namespace backendProject.Database
                 .WithOne(x => x.Session)
                 .HasPrincipalKey<Session>(x => x.SessionId);
 
+            //profile and files -> createdby
+
+            builder.Entity<Profile>()
+                .HasMany(x => x.FilesCreatedByMe)
+                .WithOne(x => x.CreatedBy)
+                .HasPrincipalKey(x => x.UniqueId);
+
             //read permissions foreign keys
 
             builder.Entity<Read>()
