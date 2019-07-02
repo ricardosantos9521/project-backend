@@ -103,12 +103,13 @@ namespace backendProject.Controllers.FileController
                                 .Select(x =>
                                     new FileInfo
                                     {
+                                        FileId = x.FileId,
                                         ContentType = x.ContentType,
                                         FileLength = x.FileLength,
                                         FileName = x.FileName,
                                         IsPublic = x.IsPublic,
-                                        ReadPermissions = x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)),
-                                        WritePermissions = x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))
+                                        ReadPermission = x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)),
+                                        WritePermission = x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))
                                     }
                                 )
                                 .FirstOrDefaultAsync();
@@ -139,11 +140,12 @@ namespace backendProject.Controllers.FileController
 
     public class FileInfo
     {
+        public Guid FileId { get; set; }
         public string ContentType { get; set; }
         public string FileName { get; set; }
         public long FileLength { get; set; }
         public Boolean IsPublic { get; set; }
-        public Boolean WritePermissions { get; set; }
-        public Boolean ReadPermissions { get; set; }
+        public Boolean WritePermission { get; set; }
+        public Boolean ReadPermission { get; set; }
     }
 }
