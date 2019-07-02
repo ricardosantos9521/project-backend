@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace backendProject.Controllers.FileController
 {
@@ -84,6 +85,21 @@ namespace backendProject.Controllers.FileController
 
             return BadRequest();
 
+        }
+
+        [HttpGet("info/{fileId}")]
+        public async Task<IActionResult> GetFileInfo(string fileId)
+        {
+            var uniqueId = User.GetUniqueId();
+
+            var file = _dbContext.ReadPermissions.Include(x => x.File).Where(x => x.FileId == new Guid(fileId) && x.UniqueId == new Guid(uniqueId)).Select(x => new { x.File.ContentType, x.File.FileLength, x.File.FileName });
+
+            if (file != null)
+            {
+                return Ok(await file.FirstOrDefaultAsync());
+            }
+
+            return BadRequest("File doesn't exist or you don't have permissions to it!");
         }
 
         [HttpGet("get/{fileId}")]
