@@ -14,14 +14,14 @@ namespace backendProject.Objects.ApiResponses
             FileLength = file.FileLength;
             FileName = file.FileName;
             IsPublic = file.IsPublic;
-            ReadPermission = file.ReadPermissions.Any(y => y.UniqueId == uniqueId);
-            WritePermission = file.WritePermissions.Any(y => y.UniqueId == uniqueId);
+            ReadPermission = file.ReadPermissions.Any(y => y.UniqueId == uniqueId) || file.OwnedByUniqueId == uniqueId;
+            WritePermission = file.WritePermissions.Any(y => y.UniqueId == uniqueId) || file.OwnedByUniqueId == uniqueId;
             CreationDate = file.CreationDate;
             CreatedBy = new CreatedByProfile
             {
-                FirstName = file.CreatedBy.FirstName,
-                LastName = file.CreatedBy.LastName,
-                UniqueId = file.CreatedBy.UniqueId
+                FirstName = file.OwnedBy.FirstName,
+                LastName = file.OwnedBy.LastName,
+                UniqueId = file.OwnedBy.UniqueId
             };
         }
 

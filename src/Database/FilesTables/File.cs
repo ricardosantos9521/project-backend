@@ -33,9 +33,9 @@ namespace backendProject.Database.FilesTables
         [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime CreationDate { get; set; }
 
-        [Required]
-        public Guid UniqueId { get; set; }
-        public virtual Profile CreatedBy { get; set; }
+        [Required, ForeignKey("OwnedBy")]
+        public Guid OwnedByUniqueId { get; set; }
+        public virtual Profile OwnedBy { get; set; }
         public virtual ICollection<Read> ReadPermissions { get; set; }
         public virtual ICollection<Write> WritePermissions { get; set; }
     }

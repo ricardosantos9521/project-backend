@@ -3,11 +3,9 @@ using System.IO;
 using System.Threading.Tasks;
 using backendProject.Database;
 using backendProject.Extensions;
-using backendProject.Database.FilesTables;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using backendProject.Objects.ApiResponses;
@@ -61,29 +59,17 @@ namespace backendProject.Controllers.FileController
                 FileName = file.FileName,
                 FileLength = file.Length,
                 IsPublic = false,
-                WritePermissions = new List<Write>()
-                {
-                    new Write
-                    {
-                        UniqueId = new Guid(uniqueId)
-                    }
-                },
-                ReadPermissions = new List<Read>()
-                {
-                    new Read
-                    {
-                        UniqueId = new Guid(uniqueId)
-                    }
-                },
                 CreationDate = DateTime.UtcNow,
-                UniqueId = new Guid(uniqueId)
+                OwnedByUniqueId = new Guid(uniqueId)
             };
 
             await _dbContext.File.AddAsync(fileTable);
 
             if (await _dbContext.SaveChangesAsync() > 0)
             {
-                var fileAux = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.CreatedBy).FirstOrDefaultAsync(x => x.UniqueId == fileTable.UniqueId);
+                var fileAux = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.OwnedBy)
+                                            .FirstOrDefaultAsync(x => x.OwnedByUniqueId == fileTable.OwnedByUniqueId);
+
                 if (fileAux != null)
                 {
                     return Ok(new FileDescription(fileAux, new Guid(uniqueId)));
@@ -99,9 +85,10 @@ namespace backendProject.Controllers.FileController
         {
             var uniqueId = User.GetUniqueId();
 
-            var file = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.CreatedBy)
+            var file = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.OwnedBy)
                                 .Where(x =>
                                     x.FileId == new Guid(fileId) && (
+                                        x.OwnedByUniqueId == new Guid(uniqueId) ||
                                         x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
                                         x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
                                         x.IsPublic
@@ -126,11 +113,18 @@ namespace backendProject.Controllers.FileController
         {
             var uniqueId = User.GetUniqueId();
 
-            var file = await _dbContext.ReadPermissions.Include(x => x.File).FirstOrDefaultAsync(x => x.FileId == new Guid(fileId) && x.UniqueId == new Guid(uniqueId));
+            var file = await _dbContext.File.Include(x => x.ReadPermissions)
+                .FirstOrDefaultAsync(x =>
+                    x.FileId == new Guid(fileId) && (
+                        x.OwnedByUniqueId == new Guid(uniqueId) ||
+                        x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
+                        x.IsPublic
+                    )
+                );
 
             if (file != null)
             {
-                return File(file.File.Bytes, file.File.ContentType, file.File.FileName);
+                return File(file.Bytes, file.ContentType, file.FileName);
             }
 
             return BadRequest("File doesn't exist or you don't have permissions to it!");
@@ -141,10 +135,12 @@ namespace backendProject.Controllers.FileController
         {
             var uniqueId = User.GetUniqueId();
 
-            var list = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.CreatedBy)
+            var list = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.OwnedBy)
                                 .Where(x =>
+                                   x.OwnedByUniqueId == new Guid(uniqueId) ||
                                    x.ReadPermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
-                                   x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))
+                                   x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId)) ||
+                                   x.IsPublic
                                 )
                                 .OrderByDescending(x => x.CreationDate)
                                 .Select(x =>

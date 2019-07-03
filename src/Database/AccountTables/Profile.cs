@@ -44,6 +44,6 @@ namespace backendProject.Database.AccountTables
 
         [JsonIgnore]
         public virtual Identity Identity { get; set; }
-        public virtual ICollection<File> FilesCreatedByMe { get; set; }
+        public virtual ICollection<File> OwnedByMe { get; set; }
     }
 }
