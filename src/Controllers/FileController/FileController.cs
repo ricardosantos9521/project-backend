@@ -44,7 +44,7 @@ namespace backendProject.Controllers.FileController
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> PostProfilePicture(IFormFile file)
+        public async Task<IActionResult> Upload(IFormFile file)
         {
             var uniqueId = User.GetUniqueId();
 
@@ -77,7 +77,6 @@ namespace backendProject.Controllers.FileController
             };
 
             return BadRequest();
-
         }
 
         [HttpGet("info/{fileId}")]
