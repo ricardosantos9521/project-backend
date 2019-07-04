@@ -8,16 +8,12 @@ namespace backendProject.Objects.ApiRequests
         [Required]
         public string FileId { get; set; }
 
-        [Required]
-        public string PersonUniqueId { get; set; }
+        public string PersonUniqueId { get; set; } = String.Empty;
 
-        [Required]
         public Boolean ReadPermission { get; set; } = false;
 
-        [Required]
         public Boolean WritePermission { get; set; } = false;
 
-        [Required]
         public Boolean PublicPermission { get; set; } = false;
     }
 }

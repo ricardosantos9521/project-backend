@@ -176,7 +176,7 @@ namespace backendProject.Controllers.FileController
             {
                 _dbContext.File.Attach(file);
 
-                if (shareRequest.WritePermission && !file.WritePermissions.Any(y => y.UniqueId == new Guid(shareRequest.PersonUniqueId)))
+                if (!shareRequest.PersonUniqueId.Equals(String.Empty) && shareRequest.WritePermission && !file.WritePermissions.Any(y => y.UniqueId == new Guid(shareRequest.PersonUniqueId)))
                 {
                     file.WritePermissions.Add(new Write
                     {
@@ -190,7 +190,7 @@ namespace backendProject.Controllers.FileController
                         UniqueId = new Guid(shareRequest.PersonUniqueId),
                     });
                 }
-                else if (shareRequest.ReadPermission && !file.ReadPermissions.Any(y => y.UniqueId == new Guid(shareRequest.PersonUniqueId)))
+                else if (!shareRequest.PersonUniqueId.Equals(String.Empty) && shareRequest.ReadPermission && !file.ReadPermissions.Any(y => y.UniqueId == new Guid(shareRequest.PersonUniqueId)))
                 {
                     file.ReadPermissions.Add(new Read
                     {
