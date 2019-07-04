@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using backendProject.Objects.ApiResponses;
+using backendProject.Objects.ApiRequests;
+using backendProject.Database.FilesTables;
 
 namespace backendProject.Controllers.FileController
 {
@@ -150,6 +152,63 @@ namespace backendProject.Controllers.FileController
             if (list != null)
             {
                 return Ok(list);
+            }
+
+            return BadRequest("Something happen try again later!");
+        }
+
+        [HttpPost("share")]
+        public async Task<IActionResult> ShareFile([FromBody]ShareFileRequest shareRequest)
+        {
+            var uniqueId = User.GetUniqueId();
+
+            var file = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions)
+                                .Where(x =>
+                                    x.FileId == new Guid(shareRequest.FileId) &&
+                                    (
+                                       x.OwnedByUniqueId == new Guid(uniqueId) ||
+                                       x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))
+                                    )
+                                )
+                                .FirstOrDefaultAsync();
+
+            if (file != null)
+            {
+                _dbContext.File.Attach(file);
+
+                if (shareRequest.WritePermission && !file.WritePermissions.Any(y => y.UniqueId == new Guid(shareRequest.PersonUniqueId)))
+                {
+                    file.WritePermissions.Add(new Write
+                    {
+                        SharedByUniqueId = new Guid(uniqueId),
+                        UniqueId = new Guid(shareRequest.PersonUniqueId),
+                    });
+
+                    file.ReadPermissions.Add(new Read
+                    {
+                        SharedByUniqueId = new Guid(uniqueId),
+                        UniqueId = new Guid(shareRequest.PersonUniqueId),
+                    });
+                }
+                else if (shareRequest.ReadPermission && !file.ReadPermissions.Any(y => y.UniqueId == new Guid(shareRequest.PersonUniqueId)))
+                {
+                    file.ReadPermissions.Add(new Read
+                    {
+                        SharedByUniqueId = new Guid(uniqueId),
+                        UniqueId = new Guid(shareRequest.PersonUniqueId),
+                    });
+                }
+
+                if (shareRequest.PublicPermission)
+                {
+                    file.IsPublic = true;
+                }
+
+
+                if (await _dbContext.SaveChangesAsync() >= 0)
+                {
+                    return Ok();
+                }
             }
 
             return BadRequest("Something happen try again later!");
