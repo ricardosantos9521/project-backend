@@ -69,6 +69,11 @@ namespace backendProject.Database
                 .WithMany(c => c.ReadPermissions)
                 .HasPrincipalKey(pc => pc.UniqueId);
 
+            builder.Entity<Read>()
+                .HasOne(pc => pc.SharedByIdentity)
+                .WithMany(c => c.SharedByMeReadPermissions)
+                .HasPrincipalKey(pc => pc.UniqueId);
+
             //write permissions foreign keys
 
             builder.Entity<Write>()
@@ -82,6 +87,11 @@ namespace backendProject.Database
             builder.Entity<Write>()
                 .HasOne(pc => pc.Identity)
                 .WithMany(c => c.WritePermissions)
+                .HasPrincipalKey(pc => pc.UniqueId);
+            
+            builder.Entity<Write>()
+                .HasOne(pc => pc.SharedByIdentity)
+                .WithMany(c => c.SharedByMeWritePermissions)
                 .HasPrincipalKey(pc => pc.UniqueId);
         }
     }

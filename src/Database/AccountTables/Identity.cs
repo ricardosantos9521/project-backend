@@ -28,5 +28,9 @@ namespace backendProject.Database.AccountTables
         public virtual ICollection<Read> ReadPermissions { get; set; }
         
         public virtual ICollection<Write> WritePermissions { get; set; }
+
+        public virtual ICollection<Read> SharedByMeReadPermissions { get; set; }
+        
+        public virtual ICollection<Write> SharedByMeWritePermissions { get; set; }
     }
 }
