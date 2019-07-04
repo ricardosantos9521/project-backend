@@ -10,7 +10,7 @@ namespace backendProject.Database.AccountTables
 {
     public class Profile
     {
-        [Key, JsonIgnore]
+        [Key]
         public Guid UniqueId { get; set; }
 
         [Required]
