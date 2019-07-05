@@ -176,28 +176,50 @@ namespace backendProject.Controllers.FileController
             {
                 _dbContext.File.Attach(file);
 
-                if (!shareRequest.PersonUniqueId.Equals(String.Empty) && shareRequest.WritePermission && !file.WritePermissions.Any(y => y.UniqueId == new Guid(shareRequest.PersonUniqueId)))
+                if (!shareRequest.Email.Equals(String.Empty))
                 {
-                    file.WritePermissions.Add(new Write
+                    var user = await _dbContext.Profile.FirstOrDefaultAsync(x => x.Email.Equals(shareRequest.Email));
+                    if (user != null)
                     {
-                        SharedByUniqueId = new Guid(uniqueId),
-                        UniqueId = new Guid(shareRequest.PersonUniqueId),
-                    });
+                        if (shareRequest.WritePermission && !file.WritePermissions.Any(y => y.UniqueId == user.UniqueId))
+                        {
+                            file.WritePermissions.Add(new Write
+                            {
+                                SharedByUniqueId = new Guid(uniqueId),
+                                UniqueId = user.UniqueId,
+                            });
 
-                    file.ReadPermissions.Add(new Read
+                            file.ReadPermissions.Add(new Read
+                            {
+                                SharedByUniqueId = new Guid(uniqueId),
+                                UniqueId = user.UniqueId,
+                            });
+                        }
+                        else if (shareRequest.ReadPermission && !file.ReadPermissions.Any(y => y.UniqueId == user.UniqueId))
+                        {
+                            file.ReadPermissions.Add(new Read
+                            {
+                                SharedByUniqueId = new Guid(uniqueId),
+                                UniqueId = user.UniqueId,
+                            });
+                        }
+                    }
+                    else
                     {
-                        SharedByUniqueId = new Guid(uniqueId),
-                        UniqueId = new Guid(shareRequest.PersonUniqueId),
-                    });
+                        var NotAcceptable = BadRequest($"User with email '{shareRequest.Email}' don't exist!");
+                        NotAcceptable.StatusCode = 406;
+
+                        return NotAcceptable;
+                    }
                 }
-                else if (!shareRequest.PersonUniqueId.Equals(String.Empty) && shareRequest.ReadPermission && !file.ReadPermissions.Any(y => y.UniqueId == new Guid(shareRequest.PersonUniqueId)))
+                else if (shareRequest.Email.Equals(String.Empty) && (shareRequest.WritePermission || shareRequest.ReadPermission))
                 {
-                    file.ReadPermissions.Add(new Read
-                    {
-                        SharedByUniqueId = new Guid(uniqueId),
-                        UniqueId = new Guid(shareRequest.PersonUniqueId),
-                    });
+                    var NotAcceptable = BadRequest("Email required!");
+                    NotAcceptable.StatusCode = 406;
+
+                    return NotAcceptable;
                 }
+
 
                 if (shareRequest.PublicPermission)
                 {
