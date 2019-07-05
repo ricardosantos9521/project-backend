@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using backendProject.Database.AdminTables;
 using backendProject.Database.FilesTables;
+using Newtonsoft.Json;
 
 namespace backendProject.Database.AccountTables
 {
     public class Identity
     {
-        [Required]
+        [Required, JsonIgnore]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid UniqueId { get; set; }
 

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using backendProject.Database.AccountTables;
+using Newtonsoft.Json;
 
 namespace backendProject.Database.FilesTables
 {
@@ -15,6 +16,7 @@ namespace backendProject.Database.FilesTables
 
         public virtual File File { get; set; }
 
+        [JsonIgnore]
         public Guid UniqueId { get; set; }
 
         public virtual Identity Identity { get; set; }

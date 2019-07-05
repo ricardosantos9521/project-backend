@@ -33,7 +33,7 @@ namespace backendProject.Database.FilesTables
         [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime CreationDate { get; set; }
 
-        [Required, ForeignKey("OwnedBy")]
+        [Required, ForeignKey("OwnedBy"), JsonIgnore]
         public Guid OwnedByUniqueId { get; set; }
         public virtual Profile OwnedBy { get; set; }
         public virtual ICollection<Read> ReadPermissions { get; set; }
