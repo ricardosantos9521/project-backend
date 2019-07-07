@@ -157,6 +157,33 @@ namespace backendProject.Controllers.FileController
             return BadRequest("Something happen try again later!");
         }
 
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteFile([FromBody]string fileId)
+        {
+            var uniqueId = User.GetUniqueId();
+
+            var file = _dbContext.File.Include(x => x.WritePermissions).Include(x => x.ReadPermissions)
+                                .FirstOrDefaultAsync(x =>
+                                    x.FileId.Equals(new Guid(fileId)) &&
+                                    (
+                                        x.OwnedByUniqueId.Equals(new Guid(uniqueId)) ||
+                                        x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))
+                                    )
+                                );
+
+            if (file != null)
+            {
+                _dbContext.Remove(file);
+
+                if (await _dbContext.SaveChangesAsync() > 0)
+                {
+                    return Ok();
+                }
+            }
+
+            return BadRequest();
+        }
+
         [HttpPost("share")]
         public async Task<IActionResult> ShareFile([FromBody]ShareFileRequest shareRequest)
         {
