@@ -23,6 +23,8 @@ namespace backendProject.Objects.ApiResponses
                 LastName = file.OwnedBy.LastName,
                 UniqueId = file.OwnedBy.UniqueId
             };
+            ReadPermissionCount = file.ReadPermissions.Distinct().Count();
+            WritePermissionCount = file.WritePermissions.Distinct().Count();
         }
 
         public Guid FileId { get; set; }
@@ -34,6 +36,8 @@ namespace backendProject.Objects.ApiResponses
         public Boolean ReadPermission { get; set; }
         public DateTime CreationDate { get; set; }
         public CreatedByProfile CreatedBy { get; set; }
+        public Int64 WritePermissionCount { get; set; }
+        public Int64 ReadPermissionCount { get; set; }
     }
 
     public class CreatedByProfile
