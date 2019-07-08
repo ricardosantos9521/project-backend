@@ -70,7 +70,7 @@ namespace backendProject.Controllers.FileController
             if (await _dbContext.SaveChangesAsync() > 0)
             {
                 var fileAux = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.OwnedBy)
-                                            .FirstOrDefaultAsync(x => x.OwnedByUniqueId == fileTable.OwnedByUniqueId);
+                                            .FirstOrDefaultAsync(x => x.FileId == fileTable.FileId);
 
                 if (fileAux != null)
                 {
