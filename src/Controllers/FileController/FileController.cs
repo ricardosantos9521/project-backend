@@ -162,7 +162,7 @@ namespace backendProject.Controllers.FileController
         {
             var uniqueId = User.GetUniqueId();
 
-            var file = _dbContext.File.Include(x => x.WritePermissions).Include(x => x.ReadPermissions)
+            var file = await _dbContext.File.Include(x => x.WritePermissions).Include(x => x.ReadPermissions)
                                 .FirstOrDefaultAsync(x =>
                                     x.FileId.Equals(new Guid(fileId)) &&
                                     (
