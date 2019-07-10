@@ -11,8 +11,10 @@ namespace backendProject.Database.AccountTables
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid SessionId { get; set; }
 
-        [Required]
+        [Required, JsonIgnore]
         public Guid UniqueId { get; set; }
+        public DateTime FirstLogin { get; set; }
+        public DateTime LastLogin { get; set; }
 
         [JsonIgnore]
         public virtual Identity Identity { get; set; }

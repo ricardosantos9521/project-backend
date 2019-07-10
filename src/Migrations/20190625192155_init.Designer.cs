@@ -9,7 +9,7 @@ using backendProject.Database;
 namespace backendProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190611154639_init")]
+    [Migration("20190625192155_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,7 +36,7 @@ namespace backendProject.Migrations
                 {
                     b.Property<Guid>("UniqueId");
 
-                    b.Property<long?>("BirthDate");
+                    b.Property<DateTime?>("BirthDate");
 
                     b.Property<string>("Email")
                         .IsRequired();
@@ -79,6 +79,10 @@ namespace backendProject.Migrations
                 {
                     b.Property<Guid>("SessionId")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("FirstLogin");
+
+                    b.Property<DateTime>("LastLogin");
 
                     b.Property<Guid>("UniqueId");
 

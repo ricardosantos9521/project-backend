@@ -47,7 +47,7 @@ namespace backendProject.Migrations
                     LastName = table.Column<string>(nullable: false),
                     Email = table.Column<string>(nullable: false),
                     Picture = table.Column<string>(nullable: true),
-                    BirthDate = table.Column<long>(nullable: true),
+                    BirthDate = table.Column<DateTime>(nullable: true),
                     Gender = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -66,7 +66,9 @@ namespace backendProject.Migrations
                 columns: table => new
                 {
                     SessionId = table.Column<Guid>(nullable: false),
-                    UniqueId = table.Column<Guid>(nullable: false)
+                    UniqueId = table.Column<Guid>(nullable: false),
+                    FirstLogin = table.Column<DateTime>(nullable: false),
+                    LastLogin = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {

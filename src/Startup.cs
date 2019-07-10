@@ -34,10 +34,8 @@ namespace backendProject
             if (AppEnvironment.EnvironmentName.Equals("Development"))
             {
                 Console.WriteLine("Development Mode");
-                services
-                    .AddDbContext<ApplicationDbContext>(options =>
-                        options.UseSqlite($"Data Source=sqlite.db")
-                    );
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseMySql("Server=localhost;Database=backendProject;User=root;Password=root"));
 
                 SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("BllqVlGsFgKUchzUo5n7cQ=="));
             }
@@ -73,7 +71,12 @@ namespace backendProject
             services.AddControllers();
 
             services.AddMvc()
-                .AddNewtonsoftJson(x => x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.MicrosoftDateFormat);
+                .AddNewtonsoftJson(x =>
+                    {
+                        x.SerializerSettings.DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat;
+                        x.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
+                    }
+                );
 
             Readiness.Add("Services Configure");
         }

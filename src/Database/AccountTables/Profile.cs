@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using backendProject.Database.FilesTables;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace backendProject.Database.AccountTables
 {
@@ -21,7 +24,8 @@ namespace backendProject.Database.AccountTables
 
         public string Picture { get; set; }
 
-        public Int64? BirthDate { get; set; }
+        [JsonConverter(typeof(IsoDateTimeConverter))]
+        public DateTime? BirthDate { get; set; }
 
         public String Gender { get; set; }
 
@@ -34,12 +38,12 @@ namespace backendProject.Database.AccountTables
                 {
                     return true;
                 }
-                
                 return false;
             }
         }
 
         [JsonIgnore]
         public virtual Identity Identity { get; set; }
+        public virtual ICollection<File> OwnedByMe { get; set; }
     }
 }
