@@ -44,17 +44,16 @@ namespace backendProject.Controllers.AccountControllers
                 claims.Add(new Claim("admin", "true"));
             }
 
-            var date = DateTime.UtcNow;
-            var date_expire = DateTime.UtcNow.AddMinutes(45);
+            var date_expire = DateTime.UtcNow.AddMinutes(JwtSettings.ExpireIn);
 
             var securityToken = new JwtSecurityToken
             (
-                issuer: Startup.Issuer,
-                audience: Startup.Audience,
+                issuer: JwtSettings.Issuer,
+                audience: JwtSettings.Audience,
                 claims: claims,
                 expires: date_expire,
-                notBefore: date,
-                signingCredentials: new SigningCredentials(Startup.SecurityKey, SecurityAlgorithms.HmacSha256)
+                notBefore: DateTime.UtcNow,
+                signingCredentials: new SigningCredentials(JwtSettings.SecurityKey, SecurityAlgorithms.HmacSha256)
             );
 
             var handler = new JwtSecurityTokenHandler();
@@ -83,11 +82,11 @@ namespace backendProject.Controllers.AccountControllers
 
             if (await _dbContext.SaveChangesAsync() > 0)
             {
-                var sesion = await _dbContext.Session.FirstOrDefaultAsync(x => x.SessionId.Equals(sessionId));
+                var session = await _dbContext.Session.FirstOrDefaultAsync(x => x.SessionId.Equals(sessionId));
 
-                sesion.LastLogin = refreshToken.IssuedUtc;
+                session.LastLogin = refreshToken.IssuedUtc;
 
-                _dbContext.Session.Attach(sesion);
+                _dbContext.Session.Attach(session);
 
                 await _dbContext.SaveChangesAsync();
 
