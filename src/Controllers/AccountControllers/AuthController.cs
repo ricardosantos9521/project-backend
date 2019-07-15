@@ -27,7 +27,7 @@ namespace backendProject.Controllers.AccountControllers
             _dbContext = dbContext;
         }
 
-        private TokenObject CreateAcessToken(Identity identity, Guid sessionId)
+        private TokenObject CreateAccessToken(Identity identity, Guid sessionId)
         {
             var claims = new List<Claim>
             {
@@ -127,7 +127,7 @@ namespace backendProject.Controllers.AccountControllers
                 sessionId = await CreateSession(identity.Item1);
             }
 
-            var accessToken = CreateAcessToken(identity.Item1, sessionId);
+            var accessToken = CreateAccessToken(identity.Item1, sessionId);
             var refreshToken = await CreateRefreshToken(identity.Item1, sessionId);
 
             return new TokensResponse
@@ -138,15 +138,15 @@ namespace backendProject.Controllers.AccountControllers
             };
         }
 
-        private async Task<(Identity, Boolean)> AddOrGetIdentity(string issuer, string subjectid, string firstname, string lastname, string email)
+        private async Task<(Identity, Boolean)> AddOrGetIdentity(string issuer, string subjectId, string firstname, string lastname, string email)
         {
-            var identity = await _dbContext.Identity.Include(x => x.Profile).Include(x => x.Admin).FirstOrDefaultAsync(x => x.Issuer.Equals(issuer) && x.SubjectId.Equals(subjectid));
+            var identity = await _dbContext.Identity.Include(x => x.Profile).Include(x => x.Admin).FirstOrDefaultAsync(x => x.Issuer.Equals(issuer) && x.SubjectId.Equals(subjectId));
             if (identity == null)
             {
                 identity = new Identity
                 {
                     Issuer = issuer,
-                    SubjectId = subjectid,
+                    SubjectId = subjectId,
                     Profile = new Profile
                     {
                         FirstName = firstname,
