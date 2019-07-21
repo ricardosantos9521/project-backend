@@ -43,27 +43,31 @@ stages:
   dependsOn: Build
   condition: ne(variables['Build.Reason'], 'PullRequest')
   jobs:
-  - job: DeployJob
+  - deployment: DeployJob
     pool: $(poolName)
-    steps:
-    - task: DownloadBuildArtifacts@0
-      inputs:
-        buildType: 'current'
-        artifactName: 'drop'
-        downloadPath: '$(System.DefaultWorkingDirectory)'
-    - task: kasunkodagoda.regex-match-replace.regex-match-replace.RegExMatchReplace@2
-      displayName: 'RegEx Match & Replace'
-      inputs:
-        PathToFile: '$(System.DefaultWorkingDirectory)/drop/deployment.yaml'
-        RegEx: BUILDNUMBER
-        ValueToReplace: '$(Build.BuildNumber)'
-    - task: Kubernetes@1
-      inputs:
-        connectionType: 'None'
-        command: 'apply'
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/drop/deployment.yaml'
-        secretType: 'dockerRegistry'
-        containerRegistryType: 'Container Registry'
-        dockerRegistryEndpoint: $(dockerRegistryEndpoint)
-        secretName: 'dockerregistrysecret'
+    environment: production
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              artifactName: 'drop'
+              downloadPath: '$(System.DefaultWorkingDirectory)'
+          - task: kasunkodagoda.regex-match-replace.regex-match-replace.RegExMatchReplace@2
+            displayName: 'RegEx Match & Replace'
+            inputs:
+              PathToFile: '$(System.DefaultWorkingDirectory)/drop/deployment.yaml'
+              RegEx: BUILDNUMBER
+              ValueToReplace: '$(Build.BuildNumber)'
+          - task: Kubernetes@1
+            inputs:
+              connectionType: 'None'
+              command: 'apply'
+              useConfigurationFile: true
+              configuration: '$(System.DefaultWorkingDirectory)/drop/deployment.yaml'
+              secretType: 'dockerRegistry'
+              containerRegistryType: 'Container Registry'
+              dockerRegistryEndpoint: $(dockerRegistryEndpoint)
+              secretName: 'dockerregistrysecret'
