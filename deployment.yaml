@@ -27,8 +27,8 @@ spec:
             cpu: 500m
             memory: 250Mi
           requests:
-            cpu: 350m
-            memory: 175Mi
+            cpu: 250m
+            memory: 125Mi
         env:
         - name: "ASPNETCORE_ENVIRONMENT"
           value: "Production"
