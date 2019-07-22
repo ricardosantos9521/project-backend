@@ -49,9 +49,8 @@ stages:
   dependsOn: Build
   condition: |
     and(
-      eq(variables['Build.SourceBranch'], 'master'),
-      ne(variables['Build.Reason'], 'PullRequest'), 
-      eq(startsWith(variables['Build.SourceBranch'], 'dev/'), 'false')
+      eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+      ne(variables['Build.Reason'], 'PullRequest')
     )
   jobs:
   - job: DeployJob
