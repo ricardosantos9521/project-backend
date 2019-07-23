@@ -37,7 +37,7 @@ stages:
     - task: CopyFiles@1
       displayName: copy kubernetes yaml
       inputs: 
-        contents: "deployment.yaml"
+        contents: "*.yaml"
         targetFolder: $(Build.ArtifactStagingDirectory)
     - task: PublishBuildArtifacts@1
       inputs:
