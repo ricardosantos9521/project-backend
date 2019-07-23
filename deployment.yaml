@@ -72,8 +72,13 @@ metadata:
     nginx.ingress.kubernetes.io/add-base-url: "true"
     nginx.ingress.kubernetes.io/ingress.allow-http: "false"
 spec:
+  tls:
+  - hosts:
+    - rics.synology.me
+    secretName: tlscert
   rules:
-  - http:
+  - host: rics.synology.me
+    http:
       paths:
       - path: /backendproject/(.*)
         backend:
