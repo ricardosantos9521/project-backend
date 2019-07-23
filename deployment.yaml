@@ -1,7 +1,8 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backendproject-dpl	  #name pod and name replocationcontroller
+  name: backendproject-dpl
+  namespace: project
 spec:
   replicas: 1
   revisionHistoryLimit: 3
@@ -50,12 +51,13 @@ spec:
           periodSeconds: 10
           successThreshold: 1
       imagePullSecrets:
-      - name: dockerregistrysecret
+      - name: gitlabdockersecret
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backendproject-svc	  #name service
+  name: backendproject-svc
+  namespace: project
 spec:
   selector:
     app: backendproject
@@ -67,6 +69,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: backendproject-ing
+  namespace: project
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/add-base-url: "true"

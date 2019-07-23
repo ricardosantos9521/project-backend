@@ -68,6 +68,13 @@ stages:
         RegEx: BUILDNUMBER
         ValueToReplace: '$(Build.BuildNumber)'
     - task: Kubernetes@1
+      displayName: 'Create namespace'
+      inputs:
+        connectionType: 'None'
+        command: 'apply'
+        useConfigurationFile: true
+        configuration: '$(System.DefaultWorkingDirectory)/drop/namespace.yaml'
+    - task: Kubernetes@1
       inputs:
         connectionType: 'None'
         command: 'apply'
@@ -76,4 +83,5 @@ stages:
         secretType: 'dockerRegistry'
         containerRegistryType: 'Container Registry'
         dockerRegistryEndpoint: $(dockerRegistryEndpoint)
-        secretName: 'dockerregistrysecret'
+        secretName: 'gitlabdockersecret'
+        namespace: project
