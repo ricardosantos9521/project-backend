@@ -70,7 +70,7 @@ namespace backendProject.Controllers.FileController
             if (await _dbContext.SaveChangesAsync() > 0)
             {
                 var fileAux = await _dbContext.File.Include(x => x.ReadPermissions).Include(x => x.WritePermissions).Include(x => x.OwnedBy)
-                                            .FirstOrDefaultAsync(x => x.OwnedByUniqueId == fileTable.OwnedByUniqueId);
+                                            .FirstOrDefaultAsync(x => x.FileId == fileTable.FileId);
 
                 if (fileAux != null)
                 {
@@ -155,6 +155,33 @@ namespace backendProject.Controllers.FileController
             }
 
             return BadRequest("Something happen try again later!");
+        }
+
+        [HttpPost("delete")]
+        public async Task<IActionResult> DeleteFile([FromBody]string fileId)
+        {
+            var uniqueId = User.GetUniqueId();
+
+            var file = await _dbContext.File.Include(x => x.WritePermissions).Include(x => x.ReadPermissions)
+                                .FirstOrDefaultAsync(x =>
+                                    x.FileId.Equals(new Guid(fileId)) &&
+                                    (
+                                        x.OwnedByUniqueId.Equals(new Guid(uniqueId)) ||
+                                        x.WritePermissions.Any(y => y.UniqueId == new Guid(uniqueId))
+                                    )
+                                );
+
+            if (file != null)
+            {
+                _dbContext.Remove(file);
+
+                if (await _dbContext.SaveChangesAsync() > 0)
+                {
+                    return Ok();
+                }
+            }
+
+            return BadRequest();
         }
 
         [HttpPost("share")]

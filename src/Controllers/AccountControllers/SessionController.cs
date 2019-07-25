@@ -25,9 +25,9 @@ namespace backendProject.Controllers.AccountControllers
         [HttpGet("sessions")]
         public async Task<ActionResult> GetSessions()
         {
-            var uniqueid = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var uniqueId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var profile = await _dbContext.Identity.Include(x => x.Sessions).FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueid);
+            var profile = await _dbContext.Identity.Include(x => x.Sessions).FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueId);
             if (profile != null)
             {
                 return Ok(profile.Sessions);
@@ -39,7 +39,7 @@ namespace backendProject.Controllers.AccountControllers
         [HttpPost("delete")]
         public async Task<ActionResult> DeleteSession([FromBody] string sessionIdToDelete)
         {
-            var uniqueid = User.GetUniqueId();
+            var uniqueId = User.GetUniqueId();
 
             var sessionId = User.GetSessionId();
 
@@ -50,7 +50,7 @@ namespace backendProject.Controllers.AccountControllers
 
             var sessionIdToDeleteGuid = new Guid(sessionIdToDelete);
 
-            var session = await _dbContext.Session.FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueid && x.SessionId == sessionIdToDeleteGuid);
+            var session = await _dbContext.Session.FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueId && x.SessionId == sessionIdToDeleteGuid);
             if (session != null)
             {
                 _dbContext.Session.Remove(session);
@@ -70,13 +70,13 @@ namespace backendProject.Controllers.AccountControllers
         [HttpPost("logout")]
         public async Task<ActionResult> LogoutSession()
         {
-            var uniqueid = User.GetUniqueId();
+            var uniqueId = User.GetUniqueId();
 
             var sessionId = User.GetSessionId();
 
             var sessionIdToDeleteGuid = new Guid(sessionId);
 
-            var session = await _dbContext.Session.FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueid && x.SessionId == sessionIdToDeleteGuid);
+            var session = await _dbContext.Session.FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueId && x.SessionId == sessionIdToDeleteGuid);
             if (session != null)
             {
                 _dbContext.Session.Remove(session);

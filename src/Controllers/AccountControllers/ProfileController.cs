@@ -24,9 +24,9 @@ namespace backendProject.Controllers.AccountControllers
         [HttpGet]
         public async Task<ActionResult> GetProfile()
         {
-            var uniqueid = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var uniqueId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-            var profile = await _dbContext.Profile.Include(x => x.Identity.Admin).FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueid);
+            var profile = await _dbContext.Profile.Include(x => x.Identity.Admin).FirstOrDefaultAsync(x => x.UniqueId.ToString() == uniqueId);
             if (profile != null)
             {
                 return Ok(profile);
@@ -38,10 +38,10 @@ namespace backendProject.Controllers.AccountControllers
         [HttpPost]
         public async Task<ActionResult> ChangeProfile([FromBody] RequestChangeProfile requestChange)
         {
-            var uniqueid = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var uniqueId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
             //prevent errors
-            requestChange.profile.UniqueId = new Guid(uniqueid);
+            requestChange.profile.UniqueId = new Guid(uniqueId);
 
             _dbContext.UpdateOnlyChangedProperties(requestChange.profile, requestChange.propertieschanged);
 

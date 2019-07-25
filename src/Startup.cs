@@ -16,9 +16,6 @@ namespace backendProject
     public class Startup
     {
         public static List<string> Readiness = new List<string>();
-        public static string Issuer = "rics";
-        public static string Audience = "backendProject";
-        public static SecurityKey SecurityKey { get; set; }
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
@@ -37,7 +34,7 @@ namespace backendProject
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql("Server=localhost;Database=backendProject;User=root;Password=root"));
 
-                SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("BllqVlGsFgKUchzUo5n7cQ=="));
+                JwtSettings.SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("BllqVlGsFgKUchzUo5n7cQ=="));
             }
             else
             {
@@ -45,7 +42,7 @@ namespace backendProject
                 services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql(Environment.GetEnvironmentVariable("ConnectionMySql")));
 
-                SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("SecretKey")));
+                JwtSettings.SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("SecretKey")));
             }
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -56,9 +53,9 @@ namespace backendProject
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = Startup.Issuer,
-                        ValidAudience = Startup.Audience,
-                        IssuerSigningKey = Startup.SecurityKey,
+                        ValidIssuer = JwtSettings.Issuer,
+                        ValidAudience = JwtSettings.Audience,
+                        IssuerSigningKey = JwtSettings.SecurityKey,
                         ClockSkew = TimeSpan.Zero
                     };
                 });

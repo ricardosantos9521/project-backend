@@ -27,7 +27,7 @@ namespace backendProject.Controllers.AccountControllers
             _dbContext = dbContext;
         }
 
-        private TokenObject CreateAcessToken(Identity identity, Guid sessionId)
+        private TokenObject CreateAccessToken(Identity identity, Guid sessionId)
         {
             var claims = new List<Claim>
             {
@@ -44,17 +44,16 @@ namespace backendProject.Controllers.AccountControllers
                 claims.Add(new Claim("admin", "true"));
             }
 
-            var date = DateTime.UtcNow;
-            var date_expire = DateTime.UtcNow.AddMinutes(45);
+            var date_expire = DateTime.UtcNow.AddMinutes(JwtSettings.ExpireIn);
 
             var securityToken = new JwtSecurityToken
             (
-                issuer: Startup.Issuer,
-                audience: Startup.Audience,
+                issuer: JwtSettings.Issuer,
+                audience: JwtSettings.Audience,
                 claims: claims,
                 expires: date_expire,
-                notBefore: date,
-                signingCredentials: new SigningCredentials(Startup.SecurityKey, SecurityAlgorithms.HmacSha256)
+                notBefore: DateTime.UtcNow,
+                signingCredentials: new SigningCredentials(JwtSettings.SecurityKey, SecurityAlgorithms.HmacSha256)
             );
 
             var handler = new JwtSecurityTokenHandler();
@@ -83,11 +82,11 @@ namespace backendProject.Controllers.AccountControllers
 
             if (await _dbContext.SaveChangesAsync() > 0)
             {
-                var sesion = await _dbContext.Session.FirstOrDefaultAsync(x => x.SessionId.Equals(sessionId));
+                var session = await _dbContext.Session.FirstOrDefaultAsync(x => x.SessionId.Equals(sessionId));
 
-                sesion.LastLogin = refreshToken.IssuedUtc;
+                session.LastLogin = refreshToken.IssuedUtc;
 
-                _dbContext.Session.Attach(sesion);
+                _dbContext.Session.Attach(session);
 
                 await _dbContext.SaveChangesAsync();
 
@@ -127,7 +126,7 @@ namespace backendProject.Controllers.AccountControllers
                 sessionId = await CreateSession(identity.Item1);
             }
 
-            var accessToken = CreateAcessToken(identity.Item1, sessionId);
+            var accessToken = CreateAccessToken(identity.Item1, sessionId);
             var refreshToken = await CreateRefreshToken(identity.Item1, sessionId);
 
             return new TokensResponse
@@ -138,15 +137,15 @@ namespace backendProject.Controllers.AccountControllers
             };
         }
 
-        private async Task<(Identity, Boolean)> AddOrGetIdentity(string issuer, string subjectid, string firstname, string lastname, string email)
+        private async Task<(Identity, Boolean)> AddOrGetIdentity(string issuer, string subjectId, string firstname, string lastname, string email)
         {
-            var identity = await _dbContext.Identity.Include(x => x.Profile).Include(x => x.Admin).FirstOrDefaultAsync(x => x.Issuer.Equals(issuer) && x.SubjectId.Equals(subjectid));
+            var identity = await _dbContext.Identity.Include(x => x.Profile).Include(x => x.Admin).FirstOrDefaultAsync(x => x.Issuer.Equals(issuer) && x.SubjectId.Equals(subjectId));
             if (identity == null)
             {
                 identity = new Identity
                 {
                     Issuer = issuer,
-                    SubjectId = subjectid,
+                    SubjectId = subjectId,
                     Profile = new Profile
                     {
                         FirstName = firstname,
