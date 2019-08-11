@@ -9,8 +9,8 @@ trigger:
 
 variables:
   poolName: HomeServers
-  imageName: 'registry.gitlab.com/ricardosantos9521/github/backendproject:$(Build.BuildNumber)'
-  dockerRegistryEndpoint: 'gitlab registry'
+  imageName: 'docker.pkg.github.com/ricardosantos9521/backendproject/backendproject:$(Build.BuildNumber)'
+  dockerRegistryEndpoint: 'github registry'
 
 stages:
 #build stage
@@ -83,5 +83,5 @@ stages:
         secretType: 'dockerRegistry'
         containerRegistryType: 'Container Registry'
         dockerRegistryEndpoint: $(dockerRegistryEndpoint)
-        secretName: 'gitlabdockersecret'
+        secretName: 'githubdockersecret'
         namespace: project
