@@ -15,43 +15,43 @@ spec:
       app: project-backend
   template:
     metadata:
-       labels:
-         app: project-backend
+      labels:
+        app: project-backend
     spec:
       containers:
-      - name: project-backend
-        image: "registry.gitlab.com/ricardosantos9521/project/backend:BUILDNUMBER"
-        ports:
-        - containerPort: 80
-        resources:
-          limits:
-            cpu: 500m
-            memory: 250Mi
-          requests:
-            cpu: 250m
-            memory: 125Mi
-        env:
-        - name: "ASPNETCORE_ENVIRONMENT"
-          value: "Production"
-        - name: "ConnectionMySql" 
-          valueFrom:
-            secretKeyRef:
-              name: project-backend
-              key: connectionpath
-        - name: "SecretKey" 
-          valueFrom:
-            secretKeyRef:
-              name: project-backend
-              key: secretkey
-        readinessProbe:
-          httpGet:
-             path: /api/readiness/
-             port: 80
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          successThreshold: 1
+        - name: project-backend
+          image: "registry.gitlab.com/ricardosantos9521/project/backend:BUILDNUMBER"
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 500m
+              memory: 250Mi
+            requests:
+              cpu: 250m
+              memory: 125Mi
+          env:
+            - name: "ASPNETCORE_ENVIRONMENT"
+              value: "Production"
+            - name: "ConnectionMySql"
+              valueFrom:
+                secretKeyRef:
+                  name: project-backend
+                  key: connectionpath
+            - name: "SecretKey"
+              valueFrom:
+                secretKeyRef:
+                  name: project-backend
+                  key: secretkey
+          readinessProbe:
+            httpGet:
+              path: /api/readiness/
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
       imagePullSecrets:
-      - name: gitlabdockersecret
+        - name: gitlabdockersecret
 ---
 apiVersion: v1
 kind: Service
@@ -62,7 +62,7 @@ spec:
   selector:
     app: project-backend
   ports:
-  - port: 80
+    - port: 80
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -75,14 +75,14 @@ metadata:
     nginx.ingress.kubernetes.io/ingress.allow-http: "false"
 spec:
   tls:
-  - hosts:
-    - ricspt.ddns.net
-    secretName: tlscert
+    - hosts:
+        - ricspt.ddns.net
+      secretName: tlscert
   rules:
-  - host: ricspt.ddns.net
-    http:
-      paths:
-      - path: /project/backend/(.*)
-        backend:
-          serviceName: project-backend-svc
-          servicePort: 80
+    - host: ricspt.ddns.net
+      http:
+        paths:
+          - path: /project/backend/(.*)
+            backend:
+              serviceName: project-backend-svc
+              servicePort: 80

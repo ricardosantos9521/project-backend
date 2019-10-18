@@ -1,5 +1,5 @@
 # project-backend
-[![Build Status](https://dev.azure.com/ricardosantos9521/GitHub%20Projects/_apis/build/status/ricardosantos9521.Project.Backend?branchName=master)](https://dev.azure.com/ricardosantos9521/GitHub%20Projects/_build/latest?definitionId=22&branchName=master)
+[![Build Status](https://dev.azure.com/ricardosantos9521/project/_apis/build/status/ricardosantos9521.project-backend?branchName=master)](https://dev.azure.com/ricardosantos9521/project/_build/latest?definitionId=45&branchName=master)
 
 Please go to https://github.com/ricardosantos9521/project-frontend for more info about this project
 
