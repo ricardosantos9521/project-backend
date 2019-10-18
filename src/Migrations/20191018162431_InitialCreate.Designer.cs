@@ -9,26 +9,29 @@ using Project.Backend.Database;
 namespace Project.Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190705171745_files")]
-    partial class files
+    [Migration("20191018162431_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Project.Backend.Database.AccountTables.Identity", b =>
                 {
                     b.Property<string>("SubjectId")
+                        .HasColumnType("varchar(100)")
                         .HasMaxLength(100);
 
                     b.Property<string>("Issuer")
+                        .HasColumnType("varchar(50)")
                         .HasMaxLength(50);
 
                     b.Property<Guid>("UniqueId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
 
                     b.HasKey("SubjectId", "Issuer");
 
@@ -37,22 +40,29 @@ namespace Project.Backend.Migrations
 
             modelBuilder.Entity("Project.Backend.Database.AccountTables.Profile", b =>
                 {
-                    b.Property<Guid>("UniqueId");
+                    b.Property<Guid>("UniqueId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<DateTime?>("BirthDate");
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("Email")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<string>("FirstName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("Gender");
+                    b.Property<string>("Gender")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("LastName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.Property<string>("Picture");
+                    b.Property<string>("Picture")
+                        .HasColumnType("longtext");
 
                     b.HasKey("UniqueId");
 
@@ -62,13 +72,17 @@ namespace Project.Backend.Migrations
             modelBuilder.Entity("Project.Backend.Database.AccountTables.RefreshToken", b =>
                 {
                     b.Property<Guid>("Token")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("ExpiresUtc");
+                    b.Property<DateTime>("ExpiresUtc")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("IssuedUtc");
+                    b.Property<DateTime>("IssuedUtc")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<Guid>("SessionId");
+                    b.Property<Guid>("SessionId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("Token");
 
@@ -81,24 +95,32 @@ namespace Project.Backend.Migrations
             modelBuilder.Entity("Project.Backend.Database.AccountTables.Session", b =>
                 {
                     b.Property<Guid>("SessionId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
 
-                    b.Property<DateTime>("FirstLogin");
+                    b.Property<DateTime>("FirstLogin")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("LastLogin");
+                    b.Property<Guid?>("IdentityUniqueId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<Guid>("UniqueId");
+                    b.Property<DateTime>("LastLogin")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("UniqueId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("SessionId");
 
-                    b.HasIndex("UniqueId");
+                    b.HasIndex("IdentityUniqueId");
 
                     b.ToTable("Session");
                 });
 
             modelBuilder.Entity("Project.Backend.Database.AdminTables.Admin", b =>
                 {
-                    b.Property<Guid>("UniqueId");
+                    b.Property<Guid>("UniqueId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("UniqueId");
 
@@ -108,24 +130,32 @@ namespace Project.Backend.Migrations
             modelBuilder.Entity("Project.Backend.Database.FilesTables.File", b =>
                 {
                     b.Property<Guid>("FileId")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
 
                     b.Property<byte[]>("Bytes")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longblob");
 
                     b.Property<string>("ContentType")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.Property<DateTime>("CreationDate");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<long>("FileLength");
+                    b.Property<long>("FileLength")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("FileName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
-                    b.Property<bool>("IsPublic");
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
 
-                    b.Property<Guid>("OwnedByUniqueId");
+                    b.Property<Guid>("OwnedByUniqueId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("FileId");
 
@@ -136,15 +166,21 @@ namespace Project.Backend.Migrations
 
             modelBuilder.Entity("Project.Backend.Database.FilesTables.Read", b =>
                 {
-                    b.Property<Guid>("FileId");
+                    b.Property<Guid>("FileId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<Guid>("UniqueId");
+                    b.Property<Guid>("UniqueId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<Guid>("SharedByUniqueId");
+                    b.Property<Guid?>("SharedByIdentityUniqueId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("SharedByUniqueId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("FileId", "UniqueId");
 
-                    b.HasIndex("SharedByUniqueId");
+                    b.HasIndex("SharedByIdentityUniqueId");
 
                     b.HasIndex("UniqueId");
 
@@ -153,15 +189,21 @@ namespace Project.Backend.Migrations
 
             modelBuilder.Entity("Project.Backend.Database.FilesTables.Write", b =>
                 {
-                    b.Property<Guid>("FileId");
+                    b.Property<Guid>("FileId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<Guid>("UniqueId");
+                    b.Property<Guid>("UniqueId")
+                        .HasColumnType("char(36)");
 
-                    b.Property<Guid>("SharedByUniqueId");
+                    b.Property<Guid?>("SharedByIdentityUniqueId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("SharedByUniqueId")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("FileId", "UniqueId");
 
-                    b.HasIndex("SharedByUniqueId");
+                    b.HasIndex("SharedByIdentityUniqueId");
 
                     b.HasIndex("UniqueId");
 
@@ -174,7 +216,8 @@ namespace Project.Backend.Migrations
                         .WithOne("Profile")
                         .HasForeignKey("Project.Backend.Database.AccountTables.Profile", "UniqueId")
                         .HasPrincipalKey("Project.Backend.Database.AccountTables.Identity", "UniqueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Project.Backend.Database.AccountTables.RefreshToken", b =>
@@ -182,16 +225,16 @@ namespace Project.Backend.Migrations
                     b.HasOne("Project.Backend.Database.AccountTables.Session", "Session")
                         .WithOne("RefreshToken")
                         .HasForeignKey("Project.Backend.Database.AccountTables.RefreshToken", "SessionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Project.Backend.Database.AccountTables.Session", b =>
                 {
                     b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithMany("Sessions")
-                        .HasForeignKey("UniqueId")
-                        .HasPrincipalKey("UniqueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("IdentityUniqueId")
+                        .HasPrincipalKey("UniqueId");
                 });
 
             modelBuilder.Entity("Project.Backend.Database.AdminTables.Admin", b =>
@@ -200,7 +243,8 @@ namespace Project.Backend.Migrations
                         .WithOne("Admin")
                         .HasForeignKey("Project.Backend.Database.AdminTables.Admin", "UniqueId")
                         .HasPrincipalKey("Project.Backend.Database.AccountTables.Identity", "UniqueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Project.Backend.Database.FilesTables.File", b =>
@@ -208,7 +252,8 @@ namespace Project.Backend.Migrations
                     b.HasOne("Project.Backend.Database.AccountTables.Profile", "OwnedBy")
                         .WithMany("OwnedByMe")
                         .HasForeignKey("OwnedByUniqueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Project.Backend.Database.FilesTables.Read", b =>
@@ -216,19 +261,20 @@ namespace Project.Backend.Migrations
                     b.HasOne("Project.Backend.Database.FilesTables.File", "File")
                         .WithMany("ReadPermissions")
                         .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Project.Backend.Database.AccountTables.Identity", "SharedByIdentity")
                         .WithMany("SharedByMeReadPermissions")
-                        .HasForeignKey("SharedByUniqueId")
-                        .HasPrincipalKey("UniqueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SharedByIdentityUniqueId")
+                        .HasPrincipalKey("UniqueId");
 
                     b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithMany("ReadPermissions")
                         .HasForeignKey("UniqueId")
                         .HasPrincipalKey("UniqueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Project.Backend.Database.FilesTables.Write", b =>
@@ -236,19 +282,20 @@ namespace Project.Backend.Migrations
                     b.HasOne("Project.Backend.Database.FilesTables.File", "File")
                         .WithMany("WritePermissions")
                         .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Project.Backend.Database.AccountTables.Identity", "SharedByIdentity")
                         .WithMany("SharedByMeWritePermissions")
-                        .HasForeignKey("SharedByUniqueId")
-                        .HasPrincipalKey("UniqueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("SharedByIdentityUniqueId")
+                        .HasPrincipalKey("UniqueId");
 
                     b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithMany("WritePermissions")
                         .HasForeignKey("UniqueId")
                         .HasPrincipalKey("UniqueId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
