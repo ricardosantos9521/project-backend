@@ -65,6 +65,8 @@ namespace Project.Backend
                     options.AddPolicy("IsAdmin", policy => policy.RequireClaim("admin", "true"));
                 });
 
+            services.AddCors();
+
             services.AddControllers();
 
             services.AddMvc()
