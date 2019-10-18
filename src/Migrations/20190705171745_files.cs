@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace backendProject.Migrations
+namespace Project.Backend.Migrations
 {
     public partial class files : Migration
     {

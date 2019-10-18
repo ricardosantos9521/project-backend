@@ -1,6 +1,6 @@
 using System;
 
-namespace backendProject.Objects
+namespace Project.Backend.Objects
 {
     public class TokenObject
     {

@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using backendProject.Database;
-using backendProject.Database.AccountTables;
-using backendProject.Objects;
-using backendProject.Objects.ApiRequests;
-using backendProject.Objects.ApiResponses;
+using Project.Backend.Database;
+using Project.Backend.Database.AccountTables;
+using Project.Backend.Objects;
+using Project.Backend.Objects.ApiRequests;
+using Project.Backend.Objects.ApiResponses;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
-namespace backendProject.Controllers.AccountControllers
+namespace Project.Backend.Controllers.AccountControllers
 {
     [Route("api/[controller]")]
     [ApiController]

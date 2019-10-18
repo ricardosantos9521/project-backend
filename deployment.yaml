@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backendproject-dpl
+  name: project-backend-dpl
   namespace: project
 spec:
   replicas: 1
@@ -12,15 +12,15 @@ spec:
       maxSurge: 2
   selector:
     matchLabels:
-      app: backendproject
+      app: project-backend
   template:
     metadata:
        labels:
-         app: backendproject
+         app: project-backend
     spec:
       containers:
-      - name: backendproject
-        image: "registry.gitlab.com/ricardosantos9521/github/backendproject:BUILDNUMBER"
+      - name: project-backend
+        image: "registry.gitlab.com/ricardosantos9521/project/backend:BUILDNUMBER"
         ports:
         - containerPort: 80
         resources:
@@ -36,12 +36,12 @@ spec:
         - name: "ConnectionMySql" 
           valueFrom:
             secretKeyRef:
-              name: backendproject
+              name: project-backend
               key: connectionpath
         - name: "SecretKey" 
           valueFrom:
             secretKeyRef:
-              name: backendproject
+              name: project-backend
               key: secretkey
         readinessProbe:
           httpGet:
@@ -56,18 +56,18 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backendproject-svc
+  name: project-backend-svc
   namespace: project
 spec:
   selector:
-    app: backendproject
+    app: project-backend
   ports:
   - port: 80
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: backendproject-ing
+  name: project-backend-ing
   namespace: project
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$1
@@ -82,7 +82,7 @@ spec:
   - host: ricspt.ddns.net
     http:
       paths:
-      - path: /backendproject/(.*)
+      - path: /project/backend/(.*)
         backend:
-          serviceName: backendproject-svc
+          serviceName: project-backend-svc
           servicePort: 80

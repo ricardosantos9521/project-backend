@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using backendProject.Database.FilesTables;
+using Project.Backend.Database.FilesTables;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace backendProject.Database.AccountTables
+namespace Project.Backend.Database.AccountTables
 {
     public class Profile
     {

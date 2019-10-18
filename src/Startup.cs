@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using backendProject.Database;
+using Project.Backend.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
-namespace backendProject
+namespace Project.Backend
 {
     public class Startup
     {
@@ -32,7 +32,7 @@ namespace backendProject
             {
                 Console.WriteLine("Development Mode");
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseMySql("Server=localhost;Database=backendProject;User=root;Password=root"));
+                    options.UseMySql("Server=localhost;Database=project.backend;User=root;Password=root"));
 
                 JwtSettings.SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("BllqVlGsFgKUchzUo5n7cQ=="));
             }

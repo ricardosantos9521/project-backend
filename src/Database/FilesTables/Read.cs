@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using backendProject.Database.AccountTables;
+using Project.Backend.Database.AccountTables;
 using Newtonsoft.Json;
 
-namespace backendProject.Database.FilesTables
+namespace Project.Backend.Database.FilesTables
 {
     public class Read
     {

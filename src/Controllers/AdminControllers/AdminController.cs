@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
-using backendProject.Database;
-using backendProject.Database.AdminTables;
+using Project.Backend.Database;
+using Project.Backend.Database.AdminTables;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace backendProject.Controllers.AdminControllers
+namespace Project.Backend.Controllers.AdminControllers
 {
     [Route("api/[controller]")]
     [ApiController]

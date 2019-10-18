@@ -1,8 +1,8 @@
-# backendProject
-[![Build Status](https://dev.azure.com/ricardosantos9521/GitHub%20Projects/_apis/build/status/ricardosantos9521.backendProject?branchName=master)](https://dev.azure.com/ricardosantos9521/GitHub%20Projects/_build/latest?definitionId=22&branchName=master)
+# project-backend
+[![Build Status](https://dev.azure.com/ricardosantos9521/GitHub%20Projects/_apis/build/status/ricardosantos9521.Project.Backend?branchName=master)](https://dev.azure.com/ricardosantos9521/GitHub%20Projects/_build/latest?definitionId=22&branchName=master)
 
-Please go to https://github.com/ricardosantos9521/reactproject for more info about this project
+Please go to https://github.com/ricardosantos9521/project-frontend for more info about this project
 
-This code is used as backend for the WebApp online in: https://ricspt.ddns.net/reactproject
+This code is used as backend for the WebApp online in: https://ricspt.ddns.net/project/frontend
 
-Backend api version: https://ricspt.ddns.net/backendproject/api/version 
+Backend api version: https://ricspt.ddns.net/project/backend/api/version 

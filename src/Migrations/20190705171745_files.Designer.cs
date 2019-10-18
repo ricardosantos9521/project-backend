@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using backendProject.Database;
+using Project.Backend.Database;
 
-namespace backendProject.Migrations
+namespace Project.Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20190705171745_files")]
@@ -19,7 +19,7 @@ namespace backendProject.Migrations
                 .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Identity", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Identity", b =>
                 {
                     b.Property<string>("SubjectId")
                         .HasMaxLength(100);
@@ -35,7 +35,7 @@ namespace backendProject.Migrations
                     b.ToTable("Identity");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Profile", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Profile", b =>
                 {
                     b.Property<Guid>("UniqueId");
 
@@ -59,7 +59,7 @@ namespace backendProject.Migrations
                     b.ToTable("Profile");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.RefreshToken", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.RefreshToken", b =>
                 {
                     b.Property<Guid>("Token")
                         .ValueGeneratedOnAdd();
@@ -78,7 +78,7 @@ namespace backendProject.Migrations
                     b.ToTable("RefreshToken");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Session", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Session", b =>
                 {
                     b.Property<Guid>("SessionId")
                         .ValueGeneratedOnAdd();
@@ -96,7 +96,7 @@ namespace backendProject.Migrations
                     b.ToTable("Session");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AdminTables.Admin", b =>
+            modelBuilder.Entity("Project.Backend.Database.AdminTables.Admin", b =>
                 {
                     b.Property<Guid>("UniqueId");
 
@@ -105,7 +105,7 @@ namespace backendProject.Migrations
                     b.ToTable("Admin");
                 });
 
-            modelBuilder.Entity("backendProject.Database.FilesTables.File", b =>
+            modelBuilder.Entity("Project.Backend.Database.FilesTables.File", b =>
                 {
                     b.Property<Guid>("FileId")
                         .ValueGeneratedOnAdd();
@@ -134,7 +134,7 @@ namespace backendProject.Migrations
                     b.ToTable("File");
                 });
 
-            modelBuilder.Entity("backendProject.Database.FilesTables.Read", b =>
+            modelBuilder.Entity("Project.Backend.Database.FilesTables.Read", b =>
                 {
                     b.Property<Guid>("FileId");
 
@@ -151,7 +151,7 @@ namespace backendProject.Migrations
                     b.ToTable("ReadPermissions");
                 });
 
-            modelBuilder.Entity("backendProject.Database.FilesTables.Write", b =>
+            modelBuilder.Entity("Project.Backend.Database.FilesTables.Write", b =>
                 {
                     b.Property<Guid>("FileId");
 
@@ -168,83 +168,83 @@ namespace backendProject.Migrations
                     b.ToTable("WritePermissions");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Profile", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Profile", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithOne("Profile")
-                        .HasForeignKey("backendProject.Database.AccountTables.Profile", "UniqueId")
-                        .HasPrincipalKey("backendProject.Database.AccountTables.Identity", "UniqueId")
+                        .HasForeignKey("Project.Backend.Database.AccountTables.Profile", "UniqueId")
+                        .HasPrincipalKey("Project.Backend.Database.AccountTables.Identity", "UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.RefreshToken", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.RefreshToken", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Session", "Session")
+                    b.HasOne("Project.Backend.Database.AccountTables.Session", "Session")
                         .WithOne("RefreshToken")
-                        .HasForeignKey("backendProject.Database.AccountTables.RefreshToken", "SessionId")
+                        .HasForeignKey("Project.Backend.Database.AccountTables.RefreshToken", "SessionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Session", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Session", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithMany("Sessions")
                         .HasForeignKey("UniqueId")
                         .HasPrincipalKey("UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Database.AdminTables.Admin", b =>
+            modelBuilder.Entity("Project.Backend.Database.AdminTables.Admin", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithOne("Admin")
-                        .HasForeignKey("backendProject.Database.AdminTables.Admin", "UniqueId")
-                        .HasPrincipalKey("backendProject.Database.AccountTables.Identity", "UniqueId")
+                        .HasForeignKey("Project.Backend.Database.AdminTables.Admin", "UniqueId")
+                        .HasPrincipalKey("Project.Backend.Database.AccountTables.Identity", "UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Database.FilesTables.File", b =>
+            modelBuilder.Entity("Project.Backend.Database.FilesTables.File", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Profile", "OwnedBy")
+                    b.HasOne("Project.Backend.Database.AccountTables.Profile", "OwnedBy")
                         .WithMany("OwnedByMe")
                         .HasForeignKey("OwnedByUniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Database.FilesTables.Read", b =>
+            modelBuilder.Entity("Project.Backend.Database.FilesTables.Read", b =>
                 {
-                    b.HasOne("backendProject.Database.FilesTables.File", "File")
+                    b.HasOne("Project.Backend.Database.FilesTables.File", "File")
                         .WithMany("ReadPermissions")
                         .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "SharedByIdentity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "SharedByIdentity")
                         .WithMany("SharedByMeReadPermissions")
                         .HasForeignKey("SharedByUniqueId")
                         .HasPrincipalKey("UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithMany("ReadPermissions")
                         .HasForeignKey("UniqueId")
                         .HasPrincipalKey("UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Database.FilesTables.Write", b =>
+            modelBuilder.Entity("Project.Backend.Database.FilesTables.Write", b =>
                 {
-                    b.HasOne("backendProject.Database.FilesTables.File", "File")
+                    b.HasOne("Project.Backend.Database.FilesTables.File", "File")
                         .WithMany("WritePermissions")
                         .HasForeignKey("FileId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "SharedByIdentity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "SharedByIdentity")
                         .WithMany("SharedByMeWritePermissions")
                         .HasForeignKey("SharedByUniqueId")
                         .HasPrincipalKey("UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithMany("WritePermissions")
                         .HasForeignKey("UniqueId")
                         .HasPrincipalKey("UniqueId")

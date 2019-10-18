@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using backendProject.Database;
+using Project.Backend.Database;
 
-namespace backendProject.Migrations
+namespace Project.Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     [Migration("20190625192155_init")]
@@ -18,7 +18,7 @@ namespace backendProject.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Identity", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Identity", b =>
                 {
                     b.Property<string>("SubjectId");
 
@@ -32,7 +32,7 @@ namespace backendProject.Migrations
                     b.ToTable("Identity");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Profile", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Profile", b =>
                 {
                     b.Property<Guid>("UniqueId");
 
@@ -56,7 +56,7 @@ namespace backendProject.Migrations
                     b.ToTable("Profile");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.RefreshToken", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.RefreshToken", b =>
                 {
                     b.Property<Guid>("Token")
                         .ValueGeneratedOnAdd();
@@ -75,7 +75,7 @@ namespace backendProject.Migrations
                     b.ToTable("RefreshToken");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Session", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Session", b =>
                 {
                     b.Property<Guid>("SessionId")
                         .ValueGeneratedOnAdd();
@@ -93,7 +93,7 @@ namespace backendProject.Migrations
                     b.ToTable("Session");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AdminTables.Admin", b =>
+            modelBuilder.Entity("Project.Backend.Database.AdminTables.Admin", b =>
                 {
                     b.Property<Guid>("UniqueId");
 
@@ -102,38 +102,38 @@ namespace backendProject.Migrations
                     b.ToTable("Admin");
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Profile", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Profile", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithOne("Profile")
-                        .HasForeignKey("backendProject.Database.AccountTables.Profile", "UniqueId")
-                        .HasPrincipalKey("backendProject.Database.AccountTables.Identity", "UniqueId")
+                        .HasForeignKey("Project.Backend.Database.AccountTables.Profile", "UniqueId")
+                        .HasPrincipalKey("Project.Backend.Database.AccountTables.Identity", "UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.RefreshToken", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.RefreshToken", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Session", "Session")
+                    b.HasOne("Project.Backend.Database.AccountTables.Session", "Session")
                         .WithOne("RefreshToken")
-                        .HasForeignKey("backendProject.Database.AccountTables.RefreshToken", "SessionId")
+                        .HasForeignKey("Project.Backend.Database.AccountTables.RefreshToken", "SessionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Database.AccountTables.Session", b =>
+            modelBuilder.Entity("Project.Backend.Database.AccountTables.Session", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithMany("Sessions")
                         .HasForeignKey("UniqueId")
                         .HasPrincipalKey("UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("backendProject.Database.AdminTables.Admin", b =>
+            modelBuilder.Entity("Project.Backend.Database.AdminTables.Admin", b =>
                 {
-                    b.HasOne("backendProject.Database.AccountTables.Identity", "Identity")
+                    b.HasOne("Project.Backend.Database.AccountTables.Identity", "Identity")
                         .WithOne("Admin")
-                        .HasForeignKey("backendProject.Database.AdminTables.Admin", "UniqueId")
-                        .HasPrincipalKey("backendProject.Database.AccountTables.Identity", "UniqueId")
+                        .HasForeignKey("Project.Backend.Database.AdminTables.Admin", "UniqueId")
+                        .HasPrincipalKey("Project.Backend.Database.AccountTables.Identity", "UniqueId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

@@ -1,6 +1,6 @@
 using System;
 
-namespace backendProject.Objects.ApiResponses
+namespace Project.Backend.Objects.ApiResponses
 {
     public class TokensResponse
     {

@@ -1,87 +1,87 @@
 trigger:
   branches:
     include:
-    - master
-    - dev/*
+      - master
+      - dev/*
   paths:
     exclude:
-    - README.md
+      - README.md
 
 variables:
   poolName: HomeServers
-  imageName: 'registry.gitlab.com/ricardosantos9521/github/backendproject:$(Build.BuildNumber)'
-  dockerRegistryEndpoint: 'gitlab registry'
+  imageName: "registry.gitlab.com/ricardosantos9521/project/backend:$(Build.BuildNumber)"
+  dockerRegistryEndpoint: "GitLab Registry"
 
 stages:
-#build stage
-- stage: Build
-  jobs:
-  - job: BuildJob
-    pool: $(poolName)
-    steps:
-    - checkout: self
-      submodules: recursive
-    - task: Docker@1
-      displayName: 'Build an image'
-      inputs:
-        arguments: |
-          --build-arg buildnumber=$(Build.BuildNumber)
-        imageName: $(imageName)
-    - task: Docker@1
-      displayName: 'Push an image'
-      inputs:
-        containerregistrytype: 'Container Registry'
-        dockerRegistryEndpoint: $(dockerRegistryEndpoint)
-        command: 'Push an image'
-        imageName: $(imageName)
-    - task: CopyFiles@1
-      displayName: copy kubernetes yaml
-      inputs: 
-        contents: "*.yaml"
-        targetFolder: $(Build.ArtifactStagingDirectory)
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: drop
+  #build stage
+  - stage: Build
+    jobs:
+      - job: BuildJob
+        pool: $(poolName)
+        steps:
+          - checkout: self
+            submodules: recursive
+          - task: Docker@1
+            displayName: "Build an image"
+            inputs:
+              arguments: |
+                --build-arg buildnumber=$(Build.BuildNumber)
+              imageName: $(imageName)
+          - task: Docker@1
+            displayName: "Push an image"
+            inputs:
+              containerregistrytype: "Container Registry"
+              dockerRegistryEndpoint: $(dockerRegistryEndpoint)
+              command: "Push an image"
+              imageName: $(imageName)
+          - task: kasunkodagoda.regex-match-replace.regex-match-replace.RegExMatchReplace@2
+            displayName: "RegEx Match & Replace"
+            inputs:
+              PathToFile: "deployment.yaml"
+              RegEx: BUILDNUMBER
+              ValueToReplace: "$(Build.BuildNumber)"
+          - task: CopyFiles@1
+            displayName: copy kubernetes yaml
+            inputs:
+              contents: "*.yaml"
+              targetFolder: $(Build.ArtifactStagingDirectory)
+          - task: PublishBuildArtifacts@1
+            inputs:
+              pathtoPublish: "$(Build.ArtifactStagingDirectory)"
+              artifactName: drop
 
-#deploy stage
-- stage: Deploy
-  dependsOn: Build
-  condition: |
-    and(
-      eq(variables['Build.SourceBranch'], 'refs/heads/master'),
-      ne(variables['Build.Reason'], 'PullRequest')
-    )
-  jobs:
-  - job: DeployJob
-    pool: $(poolName)
-    steps:
-    - task: DownloadBuildArtifacts@0
-      inputs:
-        buildType: 'current'
-        artifactName: 'drop'
-        downloadPath: '$(System.DefaultWorkingDirectory)'
-    - task: kasunkodagoda.regex-match-replace.regex-match-replace.RegExMatchReplace@2
-      displayName: 'RegEx Match & Replace'
-      inputs:
-        PathToFile: '$(System.DefaultWorkingDirectory)/drop/deployment.yaml'
-        RegEx: BUILDNUMBER
-        ValueToReplace: '$(Build.BuildNumber)'
-    - task: Kubernetes@1
-      displayName: 'Create namespace'
-      inputs:
-        connectionType: 'None'
-        command: 'apply'
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/drop/namespace.yaml'
-    - task: Kubernetes@1
-      inputs:
-        connectionType: 'None'
-        command: 'apply'
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/drop/deployment.yaml'
-        secretType: 'dockerRegistry'
-        containerRegistryType: 'Container Registry'
-        dockerRegistryEndpoint: $(dockerRegistryEndpoint)
-        secretName: 'gitlabdockersecret'
-        namespace: project
+  #deploy stage
+  - stage: Deploy
+    dependsOn: Build
+    condition: |
+      and(
+        eq(variables['Build.SourceBranch'], 'refs/heads/master'),
+        ne(variables['Build.Reason'], 'PullRequest')
+      )
+    jobs:
+      - job: DeployJob
+        pool: $(poolName)
+        steps:
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: "current"
+              artifactName: "drop"
+              downloadPath: "$(System.DefaultWorkingDirectory)"
+          - task: Kubernetes@1
+            displayName: "Create namespace"
+            inputs:
+              connectionType: "None"
+              command: "apply"
+              useConfigurationFile: true
+              configuration: "$(System.DefaultWorkingDirectory)/drop/namespace.yaml"
+          - task: Kubernetes@1
+            inputs:
+              connectionType: "None"
+              command: "apply"
+              useConfigurationFile: true
+              configuration: "$(System.DefaultWorkingDirectory)/drop/deployment.yaml"
+              secretType: "dockerRegistry"
+              containerRegistryType: "Container Registry"
+              dockerRegistryEndpoint: $(dockerRegistryEndpoint)
+              secretName: "gitlabdockersecret"
+              namespace: project

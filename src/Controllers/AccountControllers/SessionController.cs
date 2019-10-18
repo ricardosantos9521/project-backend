@@ -3,13 +3,13 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using backendProject.Database;
-using backendProject.Extensions;
+using Project.Backend.Database;
+using Project.Backend.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace backendProject.Controllers.AccountControllers
+namespace Project.Backend.Controllers.AccountControllers
 {
     [Route("api/[controller]")]
     [ApiController]

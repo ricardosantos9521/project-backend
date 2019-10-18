@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-namespace backendProject
+namespace Project.Backend
 {
     public class Program
     {

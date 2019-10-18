@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using backendProject.Database.FilesTables;
+using Project.Backend.Database.FilesTables;
 
-namespace backendProject.Objects.ApiResponses
+namespace Project.Backend.Objects.ApiResponses
 {
     public class FileDescription
     {

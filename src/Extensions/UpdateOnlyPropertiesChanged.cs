@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace backendProject.Extensions
+namespace Project.Backend.Extensions
 {
     public static class Extensions
     {

@@ -1,9 +1,9 @@
-using backendProject.Database.AccountTables;
-using backendProject.Database.AdminTables;
-using backendProject.Database.FilesTables;
+using Project.Backend.Database.AccountTables;
+using Project.Backend.Database.AdminTables;
+using Project.Backend.Database.FilesTables;
 using Microsoft.EntityFrameworkCore;
 
-namespace backendProject.Database
+namespace Project.Backend.Database
 {
     public class ApplicationDbContext : DbContext
     {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using backendProject.Database.AccountTables;
+using Project.Backend.Database.AccountTables;
 
-namespace backendProject.Objects.ApiRequests
+namespace Project.Backend.Objects.ApiRequests
 {
     public class RequestChangeProfile
     {

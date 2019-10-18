@@ -1,7 +1,7 @@
 
 using System.Security.Claims;
 
-namespace backendProject.Extensions
+namespace Project.Backend.Extensions
 {
     public static class Claims
     {

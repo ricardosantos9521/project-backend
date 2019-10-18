@@ -1,18 +1,18 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using backendProject.Database;
-using backendProject.Extensions;
+using Project.Backend.Database;
+using Project.Backend.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using backendProject.Objects.ApiResponses;
-using backendProject.Objects.ApiRequests;
-using backendProject.Database.FilesTables;
+using Project.Backend.Objects.ApiResponses;
+using Project.Backend.Objects.ApiRequests;
+using Project.Backend.Database.FilesTables;
 
-namespace backendProject.Controllers.FileController
+namespace Project.Backend.Controllers.FileController
 {
     [Route("api/[controller]")]
     [ApiController]
