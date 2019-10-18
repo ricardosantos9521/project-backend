@@ -1,18 +1,19 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
 WORKDIR /app
-EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
-WORKDIR /appcode
-COPY ["/src/Project.Backend.csproj", "./src/"]
-RUN dotnet restore "./src/Project.Backend.csproj"
-COPY /src/ ./src/
-ARG buildnumber=1
-RUN dotnet publish "./src/Project.Backend.csproj" -c Release -r linux-x64 --version-suffix $buildnumber -o /app
+WORKDIR /src
+COPY ["/src/Project.Backend.csproj", "."]
+RUN dotnet restore "Project.Backend.csproj"
+COPY /src/ .
+RUN dotnet build "Project.Backend.csproj" -c Release -o /app
+ARG buildnumber="notset"
+RUN dotnet publish "Project.Backend.csproj" -c Release --version-suffix $buildnumber -o /app
 
 FROM base AS final
 WORKDIR /app
-COPY --from=build /app .
 ENV ASPNETCORE_ENVIRONMENT Production
 ENV ASPNETCORE_URLS "http://+"
-ENTRYPOINT ["dotnet", "./Project.Backend.dll"]
+EXPOSE 80
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "Project.Backend.dll"]
